@@ -1,7 +1,3 @@
-Here's a complete README template for your GitHub repository, tailored for your hotel management application. It includes explanations, sections, and emojis for a friendly touch!
-
----
-
 # Hotel Management Application 🏨
 
 Welcome to the Hotel Management Application! This open-source project aims to provide a comprehensive solution for hotel management, allowing users to manage bookings, rooms, clients, and more. This document serves as a guide for developers and users interested in this application.
@@ -28,7 +24,7 @@ Welcome to the Hotel Management Application! This open-source project aims to pr
 ## Technologies Used 🛠️
 - **Frontend**: Next.js, SCSS
 - **Backend**: Node.js, Express.js
-- **Database**: MongoDB (or your chosen database)
+- **Database**: PostgreSQL (or your chosen database)
 - **Version Control**: Git
 - **Deployment**: Vercel (or your preferred hosting solution)
 
@@ -115,6 +111,3 @@ We welcome contributions! Here’s how you can help:
 ## License 📝
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-Feel free to customize any sections to better fit your project's specific features or requirements. This template provides a comprehensive overview that should be helpful for both users and developers interested in your hotel management application. If you need further adjustments or additions, just let me know!
