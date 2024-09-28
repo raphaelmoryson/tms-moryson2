@@ -24,9 +24,9 @@ Welcome to the Hotel Management Application! This open-source project aims to pr
 ## Technologies Used 🛠️
 - **Frontend**: Next.js, SCSS
 - **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL (or your chosen database)
+- **Database**: Prisma, PostgreSQL
 - **Version Control**: Git
-- **Deployment**: Vercel (or your preferred hosting solution)
+- **Deployment**: Vercel 
 
 ## Getting Started 🚀
 To get started with this project, follow these steps:
