@@ -1,4 +1,5 @@
 @import "../styles/import.scss";
+
 * {
     margin: 0;
     padding: 0;
@@ -10,4 +11,39 @@
 
 body {
     font-family: "Roboto", sans-serif;
+}
+
+.hostel_index {
+    display: flex;
+    flex-direction: row;
+}
+
+.hostel_area {
+    padding: 30px;
+    width: 100%;
+
+    .hostel_area_top {
+        width: 90vw;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        // TITLE
+        .hostel_separ {
+            margin: 0 15px;
+            width: 2px;
+            background-color: black;
+            height: 35px;
+        }
+        .hostel_area_title {
+            font-size: 2em;
+            font-style: oblique;
+        }
+    }
+
+    // CONTENT
+    .hostel_area_index {
+        margin-top: 10px;
+        width: 100%;
+        height: 95%;
+    }
 }

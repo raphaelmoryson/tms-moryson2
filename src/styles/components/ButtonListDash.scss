@@ -1,0 +1,23 @@
+$sizeButton : 30px;
+
+.hostel_button_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .hostel_button_list {
+        // STYLE
+        width: $sizeButton;
+        height: $sizeButton;
+        border-radius: 50%;
+        border: none;
+        color: white;
+        margin-left: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        // POS
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+}
