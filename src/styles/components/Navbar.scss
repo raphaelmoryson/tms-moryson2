@@ -1,0 +1,24 @@
+.navbar_container {
+    width: 3%;
+    height: 100vh;
+    // COLOR
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(84, 9, 121, 1) 61%, rgba(83, 9, 123, 1) 93%);
+    // POSITION
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .navbar_list {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        ul {
+            li {
+                a {
+                    color: white;
+                    font-size: 2.1em;
+                }
+            }
+        }
+    }
+}
