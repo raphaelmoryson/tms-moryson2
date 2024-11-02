@@ -1,5 +1,19 @@
-@import "../styles/components/Card.scss";
 @import "../styles/components/Navbar.scss";
-
-// DASHBOARD / HOME
+// DASHBOARD 
 @import "../styles/components/ButtonListDash.scss";
+// DASHBOARD / HOME
+@import "../styles/components/Home/Dashboard.scss";
+
+
+
+
+
+
+
+
+// ORDERs
+
+@import "../styles/components/Orders/DashboardOrders.scss";
+@import "../styles/components/Orders/CreateOrdersForm.scss";
+@import "../styles/components/Orders/OrdersList.scss";
+@import "../styles/components/Orders/OrdersEdit.scss";

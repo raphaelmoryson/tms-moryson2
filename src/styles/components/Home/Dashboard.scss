@@ -1,0 +1,51 @@
+$primary-color: #4CAF50;
+$secondary-color: black;
+$text-color: #333;
+$card-bg-color: #fff;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+.moryson_card_dashboard_container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px;
+
+    .moryson_card_dashboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 350px;
+        background-color: $card-bg-color;
+        box-shadow: 0 4px 8px 0 $shadow-color, 0 6px 20px 0 $shadow-color;
+        border-radius: 15px;
+        padding: 20px;
+        transition: transform 0.2s;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        .moryson_card_icon {
+            font-size: 4.5em;
+            color: $secondary-color;
+        }
+
+        .moryson_card_title {
+            text-align: center;
+
+            h1 {
+                font-size: 1.5em;
+                color: $text-color;
+                margin-bottom: 10px;
+            }
+
+            p {
+                color: $primary-color;
+                font-size: 2em;
+                font-weight: bold;
+            }
+        }
+    }
+}

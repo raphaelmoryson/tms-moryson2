@@ -1,0 +1,141 @@
+.create-orders-form {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1800px;
+  margin: 20px auto;
+  overflow-y: scroll;
+  height: 750px;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    fieldset {
+      padding: 20px;
+      margin: 10px 0;
+      border: 2px solid $mrs;
+      border-radius: 5px;
+      background-color: #f1f1f1;
+      color: $mrs;
+
+      legend {
+        color: $mrs;
+        font-weight: bold;
+        padding: 0 10px;
+        font-size: 1.2em;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+
+      .role {
+        font-size: 0.9em;
+        color: #777; // Couleur gris pour le rôle
+      }
+      
+      label {
+        margin-bottom: 5px;
+        display: block;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input,
+      textarea {
+        width: 98%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+
+        &:focus {
+          border-color: $mrs;
+          outline: none;
+          box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      .selection {
+        display: flex;
+        justify-content: space-between; // To distribute the boxes evenly
+        margin-bottom: 20px;
+
+        .selection-box {
+          flex: 1;
+          background-color: #fff;
+          border: 2px solid #ddd;
+          border-radius: 10px;
+          padding: 20px;
+          text-align: center;
+          cursor: pointer;
+          transition: border-color 0.3s, box-shadow 0.3s;
+
+          &:hover {
+            border-color: $mrs;
+            box-shadow: 0 4px 10px $mrs;
+          }
+
+          &.active {
+            border-color: $mrs; // Highlight the selected box
+            box-shadow: 0 4px 10px $mrs;
+          }
+
+          .icon {
+            font-size: 4em; // Adjust size for visibility
+            margin-bottom: 10px;
+            color: $mrs; // Icon color
+          }
+
+          .label {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.2em;
+          }
+        }
+      }
+
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        margin-top: 5px;
+
+        &:focus {
+          border-color: $mrs;
+          outline: none;
+          box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+      }
+    }
+
+    .submit-button {
+      background-color: $mrs;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+$primary-color: #4a90e2;
+$success-color: #4caf50;
+$warning-color: #ff9800;
+$border-color: #e0e0e0;
+$text-color: #333;
+$bg-color: #f9f9f9;
+$header-bg-color: #eaeaea;
+
+.orders-list {
+    padding: 20px;
+    background-color: $bg-color;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    .title {
+        color: $primary-color;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+
+        .table-header {
+            background-color: $header-bg-color;
+            border-bottom: 2px solid $border-color;
+
+            .table-row {
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+                padding: 10px 0;
+
+                .table-cell {
+                    flex: 1;
+                    padding: 10px;
+                    text-align: left;
+                }
+            }
+        }
+
+        .table-body {
+            .table-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid $border-color;
+                transition: background-color 0.2s;
+
+                &:hover {
+                    background-color: lighten($bg-color, 5%);
+                }
+
+                .table-cell {
+                    flex: 1;
+                    padding: 10px;
+                    text-align: left;
+
+                    &.status {
+                        font-weight: bold;
+
+                        &.status-delivered {
+                            color: $success-color;
+                        }
+
+                        &.status-in-progress {
+                            color: $warning-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
