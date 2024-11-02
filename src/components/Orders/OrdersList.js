@@ -1,30 +1,32 @@
+import { initialState, ordersReducer } from '@/pages/orders/reducer';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 
 function OrdersList() {
-    const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [state, dispatch] = useReducer(ordersReducer, initialState);
+    const { orders, loading, error } = state;
 
     useEffect(() => {
         async function getOrders() {
+            dispatch({ type: 'FETCH_ORDERS_REQUEST' });
             try {
                 const response = await fetch("api/orders");
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setOrders(data);
+                dispatch({ type: 'FETCH_ORDERS_SUCCESS', payload: data });
             } catch (error) {
                 console.error("Error fetching orders:", error);
-                setError(error.message);
-            } finally {
-                setLoading(false);
+                dispatch({ type: 'FETCH_ORDERS_FAILURE', payload: error.message });
             }
         }
-
-        getOrders();
-    }, []);
+        
+        if (orders.length === 0 && !loading) {
+            getOrders();
+        }
+        console.log(orders)
+    }, [orders.length, loading]);
 
     if (loading) return <p>Loading orders...</p>;
     if (error) return <p>Error fetching orders: {error}</p>;

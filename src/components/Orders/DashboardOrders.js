@@ -12,7 +12,6 @@ function DashboardOrders() {
     const toggleCreateOrders = () => {
         setCreateOrders(prev => !prev);
     };
-    // GET DRIVERS
 
     useEffect(() => {
         async function getDrivers() {
