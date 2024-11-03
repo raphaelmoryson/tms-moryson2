@@ -7,6 +7,9 @@ import { IoMdPeople } from "react-icons/io";
 import { FaFileInvoice } from "react-icons/fa";
 import { BiSolidReport } from "react-icons/bi";
 import { IoIosSettings } from "react-icons/io";
+import Image from 'next/image';
+
+import logo from '@/images/logo.png'
 
 function Navbar() {
     const navbarLinks = [
@@ -51,6 +54,9 @@ function Navbar() {
     return (
         <div className='navbar_container'>
             <div className='navbar_list'>
+                <div className='logo'>
+                    <Image src={logo} alt=''/>
+                </div>
                 <ul>
                     {navbarLinks.map((link, index) => (
                         <li key={index}>

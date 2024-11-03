@@ -1,9 +1,11 @@
+import useFetchReducer from '@/useFetchReducer';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 function OrdersShow() {
+    const { data: drivers, loading, error } = useFetchReducer('/api/drivers');
     const router = useRouter();
-    const { id, details, pickupAddress, deliveryAddress, quantity, weight, status, deliveryDate, driverName, driverRole } = router.query;
+    const { id } = router.query;
 
     const [formData, setFormData] = useState({
         details: '',
@@ -13,25 +15,31 @@ function OrdersShow() {
         weight: '',
         status: '',
         deliveryDate: '',
-        driverName: '',
-        driverRole: ''
+        driverId: ''
     });
 
     useEffect(() => {
         if (router.isReady) {
-            setFormData({
-                details: details || '',
-                pickupAddress: pickupAddress || '',
-                deliveryAddress: deliveryAddress || '',
-                quantity: quantity || '',
-                weight: weight || '',
-                status: status || '',
-                deliveryDate: deliveryDate || '',
-                driverName: driverName || '',
-                driverRole: driverRole || ''
-            });
+            // Charger les données de la commande
+            const fetchOrderData = async () => {
+                const response = await fetch(`/api/orders/${id}`);
+                const data = await response.json();
+
+                setFormData({
+                    details: data.details || '',
+                    pickupAddress: data.pickupAddress || '',
+                    deliveryAddress: data.deliveryAddress || '',
+                    quantity: data.quantity || '',
+                    weight: data.weight || '',
+                    status: data.status || '',
+                    deliveryDate: new Date(data.deliveryDate), 
+                    driverId: data.driverId || '' 
+                });
+            };
+
+            fetchOrderData();
         }
-    }, [router.isReady, details, pickupAddress, deliveryAddress, quantity, weight, status, deliveryDate, driverName, driverRole]);
+    }, [router.isReady, id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -45,7 +53,7 @@ function OrdersShow() {
         e.preventDefault();
 
         const response = await fetch(`/api/orders/${id}`, {
-            method: 'PUT', 
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -53,14 +61,21 @@ function OrdersShow() {
         });
 
         if (response.ok) {
-            router.push('/orders');
+            router.push('/?path=orders');
         } else {
-            // Handle error
             console.error("Failed to update order");
         }
     };
 
-    
+    if (loading) return <p>Loading drivers...</p>;
+    if (error) return <p>Error fetching drivers: {error}</p>;
+    const formatDateToString = (date) => {
+        if (!date) return '';
+        const d = new Date(date);
+        return d.toISOString().split('T')[0];
+    };
+
+
 
     return (
         <div className="order-details">
@@ -93,14 +108,35 @@ function OrdersShow() {
                         <option value="DELIVERED">Livré</option>
                     </select>
                 </div>
+
                 <div>
                     <label>Date de Livraison :</label>
-                    <input type="date" name="deliveryDate" value={formData.deliveryDate.split('T')[0]} onChange={handleChange} required />
+                    <input
+                        type="date"
+                        name="deliveryDate"
+                        value={formatDateToString(formData.deliveryDate)}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
+
                 <div>
                     <label>Chauffeur :</label>
-                    <input type="text" name="driverName" value={formData.driverName} onChange={handleChange} required />
+                    <select
+                        name="driverId"
+                        value={formData.driverId}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Sélectionner un chauffeur</option>
+                        {drivers.map((driver) => (
+                            <option key={driver.id} value={driver.id}>
+                                {driver.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
+
                 <button type="submit">Modifier la Commande</button>
             </form>
         </div>

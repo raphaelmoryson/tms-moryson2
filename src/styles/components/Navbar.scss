@@ -11,6 +11,10 @@
         display: flex;
         flex-direction: column;
         margin-top: 20px;
+        .logo img {
+            width: 155px;
+            height: 100px;
+        }
 
         ul {
             padding: 0;

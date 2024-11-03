@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { FaPrint } from 'react-icons/fa'
 import { AiOutlineClose } from 'react-icons/ai'; // Importing an icon for closing
 import Area from '../Area'
 import CreateOrdersForm from './CreateOrdersForm'
 import { IoMdAdd } from "react-icons/io";
 import OrdersList from './OrdersList';
+import useFetchReducer from '@/useFetchReducer';
 
 function DashboardOrders() {
     const [createOrders, setCreateOrders] = useState(false)
-    const [drivers, setDrivers] = useState({})
+    const { data: drivers, loading, error } = useFetchReducer('api/drivers')
+
+    if (loading) return <p>Loading orders...</p>;
+    if (error) return <p>Error fetching orders: {error}</p>;
+
     const toggleCreateOrders = () => {
         setCreateOrders(prev => !prev);
     };
-
-    useEffect(() => {
-        async function getDrivers() {
-            let data = await fetch("api/drivers")
-            let response = await data.json()
-            setDrivers(response)
-        }
-        getDrivers()
-    }, [])
-
 
     const button = [
         {
