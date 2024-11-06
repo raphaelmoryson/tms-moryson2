@@ -32,8 +32,8 @@ function OrdersShow() {
                     quantity: data.quantity || '',
                     weight: data.weight || '',
                     status: data.status || '',
-                    deliveryDate: new Date(data.deliveryDate), 
-                    driverId: data.driverId || '' 
+                    deliveryDate: new Date(data.deliveryDate),
+                    driverId: data.driverId || ''
                 });
             };
 
@@ -115,7 +115,13 @@ function OrdersShow() {
                         type="date"
                         name="deliveryDate"
                         value={formatDateToString(formData.deliveryDate)}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                            const { value } = e.target;
+                            setFormData({
+                                ...formData,
+                                deliveryDate: new Date(value)
+                            });
+                        }}
                         required
                     />
                 </div>

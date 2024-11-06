@@ -1,6 +1,10 @@
 import useFetchReducer from '@/useFetchReducer';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import WorkSheetDocument from '@/pages/orders/worksheet/worksheetPDF';
+
+const PDFDownloadLink = dynamic(() => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink), { ssr: false });
 
 function OrdersList() {
     const { data: orders, loading, error } = useFetchReducer('api/orders');
@@ -15,7 +19,7 @@ function OrdersList() {
         if (orders) {
             const uniqueDrivers = [...new Set(orders.map(order => order.driver.name))];
             setDrivers(uniqueDrivers);
-            setFilteredOrders(orders); 
+            setFilteredOrders(orders);
         }
     }, [orders]);
 
@@ -86,7 +90,6 @@ function OrdersList() {
 
     return (
         <div className="orders-list">
-            <h2 className="title">Liste des Commandes</h2>
 
             <div className="filter-controls">
                 <label>Filtrer par Chauffeur :</label>
@@ -111,8 +114,8 @@ function OrdersList() {
                 <div className="table-header">
                     <div className="table-row">
                         <div className="table-cell">Détails</div>
-                        <div className="table-cell">Adresse de Ramassage</div>
-                        <div className="table-cell">Adresse de Livraison</div>
+                        <div className="table-cell">Adresse de Ramassage/Livraison</div>
+                        <div className="table-cell">Adresse d'arrivée</div>
                         <div className="table-cell">Quantité</div>
                         <div className="table-cell">Poids (kg)</div>
                         <div className="table-cell">Statut</div>
@@ -120,27 +123,33 @@ function OrdersList() {
                         <div className="table-cell">Chauffeur</div>
                         <div className="table-cell">Action</div>
                     </div>
-                    </div>
+                </div>
                 <div className="table-body">
                     {sortedOrders.map((order) => (
                         <div key={order.id} className="table-row">
                             <div className="table-cell">{order.details}</div>
                             <div className="table-cell">{order.pickupAddress}</div>
                             <div className="table-cell">{order.deliveryAddress}</div>
-                            <div className="table-cell">{order.quantity}</div>
-                            <div className="table-cell">{order.weight}</div>
+                            <div className="table-cell">{order.quantity} Palettes</div>
+                            <div className="table-cell">{order.weight}kg</div>
                             <div className={`table-cell status ${order.status === 'DELIVERED' ? 'status-delivered' : 'status-in-progress'}`}>
                                 {order.status === "IN_PROGRESS" ? "En cours" : "Livré"}
                             </div>
-                            <div className="table-cell">{new Date(order.deliveryDate).toLocaleDateString()}</div>
-                            <div className="table-cell">{order.driver.name} - {order.driver.role}</div>
+                            <div className="table-cell">
+                                {order.status == "IN_PROGRESS" && new Date() > new Date(order.deliveryDate) ? <p style={{ fontWeight: "600", color: "red" }}>{new Date(order.deliveryDate).toLocaleDateString()}</p> : <>{new Date(order.deliveryDate).toLocaleDateString()}</>}
+                            </div>
+                            <div className="table-cell">{order.driver.name}</div>
                             <div className="table-cell">
                                 <Link href={`/orders/${order.id}`}>
                                     Voir
                                 </Link>
-                                <Link href={`/orders/worksheet/${order.id}`}>
-                                    Fiche travail
-                                </Link>
+                                <PDFDownloadLink
+                                    document={<WorkSheetDocument orderDetails={order} />}
+                                    fileName={`fiche_de_travail_${order.id}.pdf`}>
+                                    {({ blob, url, loading, error }) =>
+                                        loading ? 'Loading document...' : 'Fiche travail'
+                                    }
+                                </PDFDownloadLink>
                             </div>
                         </div>
                     ))}

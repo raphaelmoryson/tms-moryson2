@@ -1,70 +1,94 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
-        padding: 20,
         backgroundColor: '#fff',
     },
-    header: {
-        fontSize: 24,
-        marginBottom: 20,
+    headerContainer: {
+        backgroundColor: '#013368',
+        color: '#fff',
+        padding: 10,
         textAlign: 'center',
-        color: '#2A9D8F',
+    },
+    headerText: {
+        fontSize: 24,
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    logo: {
+        width: 180,
+        height: 100,
+        margin: '0 auto',
+    },
+    footer: {
+        backgroundColor: '#013368',
+        height: 20,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
     },
     section: {
         margin: 10,
         padding: 10,
-        border: '1px solid #2A9D8F',
+        border: '1px solid #013368',
+        borderRadius: 5,
     },
     title: {
         fontSize: 18,
+        color: '#013368',
         marginBottom: 10,
-        color: '#264653',
     },
     text: {
-        margin: 5,
         fontSize: 14,
+        marginVertical: 5,
     },
-    arrow: {
-        stroke: '#2A9D8F',
-        strokeWidth: 2,
-        fill: 'none',
+    arrowSection: {
+        marginVertical: 20,
+        textAlign: 'center',
     },
-    arrowHead: {
-        fill: '#2A9D8F',
+    boldText: {
+        fontWeight: 'bold',
+        color: '#013368',
     },
 });
 
 const WorkSheetDocument = ({ orderDetails }) => {
-
     return (
         <Document>
             <Page size="A4" style={styles.page}>
-                <Text style={styles.header}>Fiche de Travail</Text>
-                <View style={styles.section}>
-                    <Text style={styles.title}>Détails de la Commande</Text>
-                    <Text style={styles.text}>ID de Commande: {orderDetails.id}</Text>
-                    <Text style={styles.text}>Point de départ: {orderDetails.pickupAddress}</Text>
-                    <Text style={styles.text}>Destination: {orderDetails.deliveryAddress}</Text>
-                    <Text style={styles.text}>Quantité: {orderDetails.quantity} palettes</Text>
-                    <Text style={styles.text}>Poids: {orderDetails.weight} kg</Text>
-                    <Text style={styles.text}>Status: {orderDetails.status == "IN_PROGRESS" ? "En cours" : "Livré"}</Text>
-                    <Text style={styles.text}>Date de Livraison: {new Date(orderDetails.deliveryDate).toLocaleDateString()}</Text>
-                    <Text style={styles.text}>ID du Chauffeur: {orderDetails.driverId} </Text>
+                <View style={styles.headerContainer}>
+                    <Image style={styles.logo} src={"/logo.png"} />
+                    <Text style={styles.headerText}>Fiche de Travail</Text>
                 </View>
 
-                {/* Draw the arrow */}
-                <View style={{ marginVertical: 20 }}>
-                    <Text style={styles.title}>Itinéraire</Text>
-                    <Text style={styles.text}>De: {orderDetails.pickupAddress} à: {orderDetails.deliveryAddress}</Text>
+                <View style={styles.section}>
+                    <Text style={styles.title}>Détails de la Commande</Text>
+                    <Text style={styles.text}>ID de Commande: <Text style={styles.boldText}>{orderDetails.id}</Text></Text>
+                    <Text style={styles.text}>Point de départ: <Text style={styles.boldText}>{orderDetails.pickupAddress}</Text></Text>
+                    <Text style={styles.text}>Destination: <Text style={styles.boldText}>{orderDetails.deliveryAddress}</Text></Text>
+                    <Text style={styles.text}>Quantité: <Text style={styles.boldText}>{orderDetails.quantity}</Text> palettes</Text>
+                    <Text style={styles.text}>Poids: <Text style={styles.boldText}>{orderDetails.weight}</Text> kg</Text>
+                    <Text style={styles.text}>Status: <Text style={styles.boldText}>{orderDetails.status === "IN_PROGRESS" ? "En cours" : "Livré"}</Text></Text>
+                    <Text style={styles.text}>Date de Livraison: <Text style={styles.boldText}>{new Date(orderDetails.deliveryDate).toLocaleDateString()}</Text></Text>
+                    <Text style={styles.text}>ID du Chauffeur: <Text style={styles.boldText}>{orderDetails.driverId}</Text></Text>
+                </View>
 
+                <View style={styles.arrowSection}>
+                    <Text style={styles.title}>Itinéraire</Text>
+                    <Text style={styles.text}>
+                        De: <Text style={styles.boldText}>{orderDetails.pickupAddress}</Text> à <Text style={styles.boldText}>{orderDetails.deliveryAddress}</Text>
+                    </Text>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.title}>Instructions Spéciales</Text>
-                    <Text style={styles.text}>{orderDetails.instructions}</Text>
+                    <Text style={styles.text}>{orderDetails.instructions ? orderDetails.instructions : "Aucune instruction"}</Text>
                 </View>
+
+                <View style={styles.footer}></View>
             </Page>
         </Document>
     );
