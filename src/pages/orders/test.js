@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 function test() {
     return (
         <PDFViewer width={1080} height={1920}>
-            <DailyWorkSheet />
+            <DailyWorkSheet id={1}/>
         </PDFViewer>
     )
 }

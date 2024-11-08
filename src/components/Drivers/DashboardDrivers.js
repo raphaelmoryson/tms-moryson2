@@ -1,6 +1,7 @@
 import React from 'react'
 import Area from '../Area'
 import { FaPrint } from "react-icons/fa";
+import DriversList from './DriversList';
 function DashboardDrivers() {
     let button = [
         {
@@ -24,6 +25,7 @@ function DashboardDrivers() {
     ]
     return (
         <Area name={"Gestions des chauffeurs"} button={button}>
+            <DriversList />
         </Area>
     )
 }

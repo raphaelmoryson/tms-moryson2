@@ -139,7 +139,7 @@ function OrdersList() {
                                 {order.status == "IN_PROGRESS" && new Date() > new Date(order.deliveryDate) ? <p style={{ fontWeight: "600", color: "red" }}>{new Date(order.deliveryDate).toLocaleDateString()}</p> : <>{new Date(order.deliveryDate).toLocaleDateString()}</>}
                             </div>
                             <div className="table-cell">{order.driver.name}</div>
-                            <div className="table-cell">
+                            <div className="table-cell" style={{display:"flex", flexDirection:"column"}}>
                                 <Link href={`/orders/${order.id}`}>
                                     Voir
                                 </Link>

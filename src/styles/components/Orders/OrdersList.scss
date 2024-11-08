@@ -5,41 +5,52 @@ $text-color: #333;
 $bg-color: #f9f9f9;
 $header-bg-color: #eaeaea;
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .filter-controls {
     display: flex;
-    flex-direction: column; 
-    margin-bottom: 20px; 
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
 
     label {
-        margin: 10px 0; 
+        margin: 10px 0;
         font-weight: bold;
+        text-align: center;
     }
 
     select {
-        padding: 10px; 
-        border: 1px solid #ccc; 
+        padding: 10px;
+        border: 1px solid #ccc;
         border-radius: 4px;
-        font-size: 14px; 
-        margin-bottom: 15px; 
-        transition: border-color 0.3s ease;  
+        font-size: 14px;
+        margin-bottom: 15px;
+        transition: border-color 0.3s ease;
 
         &:focus {
-            border-color: #007bff; 
-            outline: none; 
+            border-color: #007bff;
+            outline: none;
         }
     }
 }
 
 .orders-list {
-    padding: 20px; 
-    background-color: #f9f9f9; 
+    padding: 20px;
+    background-color: $bg-color;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-
     .title {
-        color: $mrs;
-        font-size: 1.8rem;
+        color: $text-color;
+        font-size: clamp(1.5rem, 2vw, 1.8rem);
         margin-bottom: 20px;
         text-align: center;
         font-weight: bold;
@@ -48,6 +59,8 @@ $header-bg-color: #eaeaea;
     .table {
         width: 100%;
         border-collapse: collapse;
+        display: flex;
+        flex-direction: column;
 
         .table-header {
             background-color: $header-bg-color;
@@ -83,9 +96,12 @@ $header-bg-color: #eaeaea;
                     flex: 1;
                     padding: 10px;
                     text-align: center;
+                    font-size: clamp(0.8rem, 1vw, 1rem); // Font size adapts for readability
+                    
                     a {
                         margin: 0 5px;
                     }
+
                     &.status {
                         font-weight: bold;
 
@@ -97,6 +113,24 @@ $header-bg-color: #eaeaea;
                             color: $warning-color;
                         }
                     }
+                }
+            }
+        }
+    }
+
+    // Responsive styles for small screens
+    @media (max-width: 768px) {
+        .table {
+            .table-row {
+                flex-direction: column; // Stack cells vertically
+                align-items: center;
+                padding: 10px 0;
+
+                .table-cell {
+                    width: 100%; // Take full width in stacked layout
+                    text-align: left; // Align text to left for readability
+                    padding: 5px 10px;
+                    font-size: clamp(0.8rem, 2vw, 1rem); // Smaller font for mobile
                 }
             }
         }

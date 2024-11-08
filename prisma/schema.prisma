@@ -10,7 +10,10 @@ datasource db {
 model Order {
   id              Int       @id @default(autoincrement())
   details         String
+  company         String
+  type            String
   pickupAddress   String
+  ref             String
   deliveryAddress String
   status          Status
   deliveryDate    DateTime?
@@ -20,7 +23,7 @@ model Order {
   weight          String
   dimensions      String
   quantity        String
-  // invoice         Invoice?
+  specialInstructions String
 }
 
 model Vehicle {
@@ -37,7 +40,6 @@ model Driver {
   role   String
   orders Order[]
 }
-
 
 model Customer {
   id      Int    @id @default(autoincrement())

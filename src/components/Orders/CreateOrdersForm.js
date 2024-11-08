@@ -8,14 +8,16 @@ function CreateOrdersForm({ driversList }) {
   const [selectDriver, setSelectedDriver] = useState(null);
   const [orderType, setOrderType] = useState('livraison');
   const [formData, setFormData] = useState({
-    company: '',
     quantity: '',
+    type : '',
     weight: '',
     departureAddress: '',
     dimensions: '',
     destinationAddress: '',
     specialInstructions: '',
-    deliveryDate: ''
+    deliveryDate: '',
+    company : '',
+    ref: ''
   });
 
   const handleMerchandiseSelect = (type) => {
@@ -49,6 +51,10 @@ function CreateOrdersForm({ driversList }) {
       weight: formData.weight,
       quantity: formData.quantity,
       dimensions: formData.dimensions,
+      specialInstructions: formData.specialInstructions,
+      type: orderType || 'indéfinie',
+      ref: formData.ref,
+      company: formData.company,
       driverId: selectDriver ? selectDriver : null,
     };
 
@@ -82,6 +88,18 @@ function CreateOrdersForm({ driversList }) {
               placeholder="Entrez l'entreprise"
               required
               value={formData.company}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="ref">Référence : </label>
+            <input
+              type="text"
+              id="ref"
+              placeholder="Entrez la référence"
+              required
+              value={formData.ref}
               onChange={handleInputChange}
             />
           </div>

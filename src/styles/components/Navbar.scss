@@ -1,5 +1,5 @@
 .navbar_container {
-    width: 10vw;
+    width: 20vw; 
     height: 100vh;
     background-color: $mrs;
     display: flex;
@@ -7,17 +7,47 @@
     padding: 20px 10px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 
+    @media screen and (min-width: 1424px) {
+        width: 15vw;
+    }
+
+    @media screen and (max-width: 1024px) {
+        width: 25vw;
+    }
+
+    @media screen and (max-width: 768px) {
+        width: 100vw;
+        height: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px;
+
+        .navbar_list {
+            flex-direction: row;
+            align-items: center;
+            overflow-x: auto;
+            width: 100%;
+        }
+    }
+
     .navbar_list {
         display: flex;
         flex-direction: column;
         margin-top: 20px;
+        
         .logo img {
-            width: 155px;
-            height: 100px;
+            width: clamp(120px, 12vw, 155px); 
+            height: auto;
+            margin-bottom: 20px;
         }
 
         ul {
             padding: 0;
+            list-style-type: none;
 
             li {
                 margin-top: 15px;
@@ -35,20 +65,30 @@
                     align-items: center;
                     padding: 10px;
                     color: white;
-                    font-size: 1em;
+                    font-size: clamp(0.9em, 1.5vw, 1em); 
                     text-decoration: none;
                     transition: color 0.3s;
 
                     svg {
-                        margin-right: 10px; // Space between icon and text
-                        font-size: 1.8em; // Icon size
+                        margin-right: 10px;
+                        font-size: clamp(1.2em, 2vw, 1.8em); 
                     }
 
                     &:hover {
-                        color: white; 
+                        color: white;
                     }
                 }
             }
         }
+    }
+}
+
+.burger-icon {
+    display: none;
+    @media screen and (max-width: 768px) {
+        display: block;
+        font-size: 2em;
+        color: white;
+        cursor: pointer;
     }
 }
