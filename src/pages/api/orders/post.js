@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     try {
         if (req.method === 'POST') {
-            const { details, pickupAddress, deliveryAddress, deliveryDate, quantity, weight, driverId, status, dimensions,specialInstructions,ref,company,type } = req.body;
+            const { details, pickupAddress, deliveryAddress, deliveryDate, quantity, weight, driverId, status, dimensions, specialInstructions, ref, company, type } = req.body;
 
             const newOrder = await prisma.order.create({
                 data: {

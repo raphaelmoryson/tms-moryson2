@@ -51,7 +51,7 @@ function CreateOrdersForm({ driversList }) {
       weight: formData.weight,
       quantity: formData.quantity,
       dimensions: formData.dimensions,
-      specialInstructions: formData.specialInstructions,
+      specialInstructions: formData.specialInstructions || "",
       type: orderType || 'indéfinie',
       ref: formData.ref,
       company: formData.company,

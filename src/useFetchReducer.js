@@ -40,7 +40,7 @@ function useFetchReducer(url, initialData = []) {
             }
         }
 
-        if (state.data.length === 0 && !state.loading) {
+        if (!state.data.length) {
             fetchData();
         }
     }, [url, state.data.length, state.loading]);
