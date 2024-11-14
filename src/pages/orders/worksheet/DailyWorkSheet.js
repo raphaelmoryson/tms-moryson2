@@ -64,37 +64,47 @@ const styles = StyleSheet.create({
     },
 });
 
-function DailyWorkSheet({ id }) {
+function DailyWorkSheet({ id, dateOrders }) {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         async function fetchInfo() {
             try {
-                const response = await fetch(`/api/orders/todayDrivers/${parseInt(id)}`);
-                if (!response.ok) throw new Error("Failed to fetch data"); 
+                const dateQuery = dateOrders ? `?date=${dateOrders}` : '';
+                const response = await fetch(`/api/orders/todayDrivers/${parseInt(id)}${dateQuery}`);
+
+                if (!response.ok) throw new Error("Failed to fetch data");
                 const result = await response.json();
-                setData(result);
+
+                if (result.message) {
+                    setError(result.message);
+                } else {
+                    setData(result);
+                }
             } catch (error) {
                 setError(error.message);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         }
         fetchInfo();
-    }, [id]);
+    }, [id, dateOrders]);
 
     if (loading) return <Text>Loading...</Text>;
-    if (error) return <Text>Error: {error}</Text>;
-    if (!data.length) return <Text>Aucun travail pour aujourd'hui.</Text>;
+    if (error) return <Text>{error}</Text>;
+    if (!data.length) return <Document> <Page size="A4" style={styles.page}><Text>Aucun travail pour aujourd'hui.</Text></Page></Document>;
+
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.headerContainer}>
                     <Image style={styles.logo} src="/logo.png" />
                     <Text style={styles.headerText}>Fiche de Travail - Ramasse</Text>
-                    <Text style={styles.headerDate}>{new Date().toLocaleDateString()}</Text>
+                    <Text style={styles.headerDate}>
+                        {dateOrders ? new Date(dateOrders).toLocaleDateString() : new Date().toLocaleDateString()}
+                    </Text>
                 </View>
                 <View style={styles.totalLigne}>
                     {data.map((item, index) => (

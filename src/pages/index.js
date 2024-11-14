@@ -1,3 +1,4 @@
+import DashboardCustomers from "@/components/Customers/DashboardCustomers";
 import DashboardDrivers from "@/components/Drivers/DashboardDrivers";
 import Dashboard from "@/components/Home/Dashboard";
 import DashboardInvoices from "@/components/Invoices/DashboardInvoices";
@@ -24,6 +25,7 @@ export default function Home() {
       {router.query.path == "vehicles" ? <DashboardVehicles /> : undefined}
       {router.query.path == "drivers" ? <DashboardDrivers /> : undefined}
       {router.query.path == "invoices" ? <DashboardInvoices /> : undefined}
+      {router.query.path == "customers" ? <DashboardCustomers /> : undefined}
       {router.query.path == "reports" ? <DashboardInvoices /> : undefined}
     </div>
   );

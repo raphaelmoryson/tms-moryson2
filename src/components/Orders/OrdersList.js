@@ -115,7 +115,6 @@ function OrdersList() {
                     <div className="table-row">
                         <div className="table-cell">Détails</div>
                         <div className="table-cell">Adresse de Ramassage/Livraison</div>
-                        <div className="table-cell">Adresse d'arrivée</div>
                         <div className="table-cell">Quantité</div>
                         <div className="table-cell">Poids (kg)</div>
                         <div className="table-cell">Statut</div>
@@ -128,8 +127,8 @@ function OrdersList() {
                     {sortedOrders.map((order) => (
                         <div key={order.id} className="table-row">
                             <div className="table-cell">{order.details}</div>
-                            <div className="table-cell">{order.pickupAddress}</div>
-                            <div className="table-cell">{order.deliveryAddress}</div>
+                            <div className="table-cell"><b>{order.pickupAddress}</b> à <b>{order.deliveryAddress}</b></div>
+
                             <div className="table-cell">{order.quantity} Palettes</div>
                             <div className="table-cell">{order.weight}kg</div>
                             <div className={`table-cell status ${order.status === 'DELIVERED' ? 'status-delivered' : 'status-in-progress'}`}>
@@ -139,7 +138,7 @@ function OrdersList() {
                                 {order.status == "IN_PROGRESS" && new Date() > new Date(order.deliveryDate) ? <p style={{ fontWeight: "600", color: "red" }}>{new Date(order.deliveryDate).toLocaleDateString()}</p> : <>{new Date(order.deliveryDate).toLocaleDateString()}</>}
                             </div>
                             <div className="table-cell">{order.driver.name}</div>
-                            <div className="table-cell" style={{display:"flex", flexDirection:"column"}}>
+                            <div className="table-cell" style={{ display: "flex", flexDirection: "column" }}>
                                 <Link href={`/orders/${order.id}`}>
                                     Voir
                                 </Link>

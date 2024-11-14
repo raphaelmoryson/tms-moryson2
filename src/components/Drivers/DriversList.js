@@ -1,7 +1,6 @@
 
 import useFetchReducer from '@/useFetchReducer';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { FaUserCircle } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import DailyWorkSheet from '@/pages/orders/worksheet/DailyWorkSheet';
@@ -9,12 +8,10 @@ import DailyWorkSheet from '@/pages/orders/worksheet/DailyWorkSheet';
 const PDFDownloadLink = dynamic(() => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink), { ssr: false });
 
 function DriversList() {
-    const [worksheetDate ,setworksheetDate] = useState()
+    const [worksheetDate, setworksheetDate] = useState()
     const { data: drivers, loading, error } = useFetchReducer('api/drivers');
-    const router = useRouter();
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error loading drivers</div>;
-    console.log(worksheetDate)
     return (
         <div className={"container"}>
             <div className={"driversFlex"}>
@@ -26,9 +23,9 @@ function DriversList() {
                             <p>Date de fiche de travail :</p>
                             <input type='date' onChange={(e) => {
                                 setworksheetDate(new Date(e.target.value))
-                            }}/>
+                            }} />
                             <PDFDownloadLink
-                                document={<DailyWorkSheet id={driver.id} />}
+                                document={<DailyWorkSheet id={driver.id} dateOrders={worksheetDate} />}
                                 fileName={`travail_${driver.name}_journalier.pdf`}>
                                 {({ blob, url, loading, error }) =>
                                     loading ? 'Loading document...' : <button

@@ -39,10 +39,15 @@
         flex-direction: column;
         margin-top: 20px;
         
-        .logo img {
-            width: clamp(120px, 12vw, 155px); 
-            height: auto;
-            margin-bottom: 20px;
+        .logo {
+            display: flex;
+            justify-content: center;
+            
+            img {
+                width: clamp(120px, 12vw, 155px); 
+                height: auto;
+                margin-bottom: 20px;
+            }
         }
 
         ul {

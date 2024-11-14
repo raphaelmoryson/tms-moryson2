@@ -8,21 +8,21 @@ datasource db {
 }
 
 model Order {
-  id              Int       @id @default(autoincrement())
-  details         String
-  company         String
-  type            String
-  pickupAddress   String
-  ref             String
-  deliveryAddress String
-  status          Status
-  deliveryDate    DateTime?
-  driver          Driver?   @relation(fields: [driverId], references: [id])
-  driverId        Int?
-  createdAt       DateTime  @default(now())
-  weight          String
-  dimensions      String
-  quantity        String
+  id                  Int       @id @default(autoincrement())
+  details             String
+  company             String
+  type                String
+  pickupAddress       String
+  ref                 String
+  deliveryAddress     String
+  status              Status
+  deliveryDate        DateTime?
+  driver              Driver?   @relation(fields: [driverId], references: [id])
+  driverId            Int?
+  createdAt           DateTime  @default(now())
+  weight              String
+  dimensions          String
+  quantity            String
   specialInstructions String
 }
 
@@ -42,9 +42,25 @@ model Driver {
 }
 
 model Customer {
-  id      Int    @id @default(autoincrement())
-  name    String
-  address String
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  address     String
+  city        String
+  postalCode  String
+  country     String   @default("France")
+  siren       String   @unique // Numéro SIREN (9 chiffres, identifiant unique de l'entreprise)
+  siret       String?  @unique // Numéro SIRET (14 chiffres), optionnel car toutes les entreprises n'ont pas de SIRET
+  apeCode     String? // Code APE (Activité Principale Exercée), optionnel
+  vatNumber   String? // Numéro de TVA Intracommunautaire, optionnel
+  email       String? // Adresse e-mail de contact
+  phoneNumber String? // Numéro de téléphone
+  website     String? // Site web de l'entreprise
+  contactName String? // Nom de la personne de contact
+  createdAt   DateTime @default(now()) // Date d'ajout du client dans le système
+  updatedAt   DateTime @updatedAt // Dernière mise à jour des informations du client
+
+  @@index([siren])
+  @@index([name])
 }
 
 model Maintenance {

@@ -6,7 +6,8 @@ import { FaCalendarCheck } from "react-icons/fa";
 import { IoMdPeople } from "react-icons/io";
 import { FaFileInvoice } from "react-icons/fa";
 import { BiSolidReport } from "react-icons/bi";
-import { IoIosSettings } from "react-icons/io";
+import { BsFileEarmarkPersonFill, BsFillFileEarmarkPersonFill } from "react-icons/bs";
+
 import Image from 'next/image';
 
 import logo from '@/images/logo.png'
@@ -38,10 +39,16 @@ function Navbar() {
             queryPath: "drivers",
         },
         {
-            name: "Clients et Facturation",
+            name: "Facturation",
             pathname: "/",
             icon: <FaFileInvoice />,
             queryPath: "invoices",
+        },
+        {
+            name: "Clients",
+            pathname: "/",
+            icon: <BsFillFileEarmarkPersonFill />,
+            queryPath: "customers",
         },
         {
             name: "Rapports et Analyses",
@@ -55,7 +62,7 @@ function Navbar() {
         <div className='navbar_container'>
             <div className='navbar_list'>
                 <div className='logo'>
-                    <Image src={logo} alt=''/>
+                    <Image src={logo} alt='' />
                 </div>
                 <ul>
                     {navbarLinks.map((link, index) => (

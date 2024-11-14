@@ -71,7 +71,7 @@ const WorkSheetDocument = ({ orderDetails }) => {
                     <Text style={styles.text}>Destination: <Text style={styles.boldText}>{orderDetails.deliveryAddress}</Text></Text>
                     <Text style={styles.text}>Quantité: <Text style={styles.boldText}>{orderDetails.quantity}</Text> palettes</Text>
                     <Text style={styles.text}>Poids: <Text style={styles.boldText}>{orderDetails.weight}</Text> kg</Text>
-                    <Text style={styles.text}>Status: <Text style={styles.boldText}>{orderDetails.status === "IN_PROGRESS" ? "En cours" : "Livré"}</Text></Text>
+                    <Text style={styles.text}>Statuts: <Text style={styles.boldText}>{orderDetails.status === "IN_PROGRESS" ? "En cours" : "Livré"}</Text></Text>
                     <Text style={styles.text}>Date de Livraison: <Text style={styles.boldText}>{new Date(orderDetails.deliveryDate).toLocaleDateString()}</Text></Text>
                     <Text style={styles.text}>ID du Chauffeur: <Text style={styles.boldText}>{orderDetails.driverId}</Text></Text>
                 </View>
