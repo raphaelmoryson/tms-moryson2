@@ -73,7 +73,9 @@ function DailyWorkSheet({ id, dateOrders }) {
         async function fetchInfo() {
             try {
                 const dateQuery = dateOrders ? `?date=${dateOrders}` : '';
+
                 const response = await fetch(`/api/orders/todayDrivers/${parseInt(id)}${dateQuery}`);
+                console.log(`/api/orders/todayDrivers/${parseInt(id)}${dateQuery}`);
 
                 if (!response.ok) throw new Error("Failed to fetch data");
                 const result = await response.json();

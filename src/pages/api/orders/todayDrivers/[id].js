@@ -11,16 +11,15 @@ export default async function handler(req, res) {
     switch (method) {
         case 'GET':
             try {
-                // Vérifier si la date est au format ISO (string)
                 const targetDate = new Date(date);
                 if (isNaN(targetDate)) {
-                    return res.status(400).json({ message: 'Invalid date format' });
+                    return res.status(400).json({ message: 'Invalid date format', receivedDate: date });
                 }
-                targetDate.setHours(0, 0, 0, 0); // Définir l'heure à minuit pour la date choisie
                 
+                targetDate.setUTCHours(0, 0, 0, 0); 
                 const startOfDay = targetDate;
-                const endOfDay = new Date(targetDate.getTime() + 24 * 60 * 60 * 1000); // Ajouter 24h pour inclure toute la journée
-
+                const endOfDay = new Date(targetDate.getTime() + 24 * 60 * 60 * 1000);
+                
                 const getOrdersByDriverId = await prisma.order.findMany({
                     where: {
                         driverId: Number(driverId),
@@ -32,7 +31,11 @@ export default async function handler(req, res) {
                 });
 
                 if (!getOrdersByDriverId || getOrdersByDriverId.length === 0) {
-                    return res.status(404).json({ message: `No orders found for driverId ${driverId} on the date ${targetDate.toLocaleDateString()}` });
+                    return res.status(404).json({
+                        message: `No orders found for driverId ${driverId} on the date ${date}`,
+                        startOfDay,
+                        endOfDay,
+                    });
                 }
 
                 return res.status(200).json(getOrdersByDriverId);

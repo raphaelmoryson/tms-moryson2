@@ -114,7 +114,7 @@ function OrdersList() {
                 <div className="table-header">
                     <div className="table-row">
                         <div className="table-cell">Détails</div>
-                        <div className="table-cell">Adresse de Ramassage/Livraison</div>
+                        <div className="table-cell">Adresse</div>
                         <div className="table-cell">Quantité</div>
                         <div className="table-cell">Poids (kg)</div>
                         <div className="table-cell">Statut</div>

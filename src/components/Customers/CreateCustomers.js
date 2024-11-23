@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import proj4 from 'proj4';
 
 function CreateCustomerForm() {
     const [siren, setSiren] = useState('');

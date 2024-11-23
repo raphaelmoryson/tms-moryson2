@@ -21,9 +21,13 @@ function DriversList() {
                         <div className={"driverInfo"}>
                             <h2 className={"driverName"}>{driver.name}</h2>
                             <p>Date de fiche de travail :</p>
-                            <input type='date' onChange={(e) => {
-                                setworksheetDate(new Date(e.target.value))
-                            }} />
+                            <input
+                                type='date'
+                                onChange={(e) => {
+                                    const selectedDate = e.target.value;
+                                    setworksheetDate(selectedDate);
+                                }}
+                            />
                             <PDFDownloadLink
                                 document={<DailyWorkSheet id={driver.id} dateOrders={worksheetDate} />}
                                 fileName={`travail_${driver.name}_journalier.pdf`}>
@@ -34,6 +38,7 @@ function DriversList() {
                                     </button>
                                 }
                             </PDFDownloadLink>
+
                         </div>
                     </div>
                 ))}
