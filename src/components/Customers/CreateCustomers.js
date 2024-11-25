@@ -19,7 +19,6 @@ function CreateCustomerForm() {
         apeCode: '',
     });
 
-    // Fetch the SIREN data from the API
     const getSiren = async () => {
         try {
             let response = await fetch(`/api/proxy?siren=${siren}`);
