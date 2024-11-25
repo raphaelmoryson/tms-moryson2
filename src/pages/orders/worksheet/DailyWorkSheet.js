@@ -3,66 +3,70 @@ import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/render
 
 const styles = StyleSheet.create({
     page: {
+        backgroundColor: '#f5f7fa',
+        padding: 10,  // Réduction des marges
         flexDirection: 'column',
-        backgroundColor: '#fff',
     },
     headerContainer: {
         backgroundColor: '#013368',
         color: '#fff',
-        padding: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 15,
         textAlign: 'center',
-        height: "110px",
+        borderRadius: 5,
+        marginBottom: 10,
     },
     headerText: {
         fontSize: 20,
-        color: '#fff',
-        textAlign: 'center',
         fontWeight: 'bold',
-        marginBottom: "10px",
+        marginBottom: 1,
     },
     headerDate: {
-        fontSize: 15,
-        color: '#fff',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        marginBottom: "10px",
+        fontSize: 12,
+        fontWeight: 'normal',
+        marginBottom: 5,
     },
     logo: {
         width: 120,
-        height: 120,
-        margin: '0 auto',
+        height: 70,
+        marginBottom: 5,
+        alignSelf: 'center',
     },
-    textLigne: {
+    taskContainer: {
+        marginBottom: 12,
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 5,
+        borderLeft: '4px solid #013368',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    },
+    taskHeader: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#013368',
+        marginBottom: 3,
+    },
+    taskInfo: {
+        marginVertical: 3,
+        fontSize: 10,
+    },
+    boldText: {
+        fontWeight: 'bold',
+    },
+    highlightedText: {
+        fontWeight: 'bold',
+        backgroundColor: '#eaf4ff',
+        paddingHorizontal: 3,
+        borderRadius: 3,
+    },
+    footer: {
+        marginTop: 20,
+        textAlign: 'center',
         fontSize: 9,
-    },
-    textLigne2: {
-        fontSize: 9,
-    },
-    textLigneInfo: {
-        fontSize: 9,
-    },
-    textLigne3ins: {
-        fontSize: 9,
-        fontWeight: "bold"
-    },
-    totalLigne: {
-        display: "flex",
-        flexDirection: "column"
-    },
-    ligne: {
-        borderTop: "1px solid #013368",
-        borderBottom: "1px solid #013368",
-        height: "50px",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 1,
-    },
-    infoOrder: {
-        marginLeft: "auto",
-        textAlign: "right",
+        color: '#555',
     },
 });
+
 
 function DailyWorkSheet({ id, dateOrders }) {
     const [data, setData] = useState([]);
@@ -72,10 +76,17 @@ function DailyWorkSheet({ id, dateOrders }) {
     useEffect(() => {
         async function fetchInfo() {
             try {
-                const dateQuery = dateOrders ? `?date=${dateOrders}` : '';
+                setLoading(true);
+                const dateQuery = `?date=${dateOrders}`;
+                const response = await fetch(`/api/orders/todayDrivers/${parseInt(id)}${dateQuery}`, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache',
+                    },
+                });
 
-                const response = await fetch(`/api/orders/todayDrivers/${parseInt(id)}${dateQuery}`);
-                console.log(`/api/orders/todayDrivers/${parseInt(id)}${dateQuery}`);
+                console.log(`Fetching: /api/orders/todayDrivers/${parseInt(id)}${dateQuery}`);
 
                 if (!response.ok) throw new Error("Failed to fetch data");
                 const result = await response.json();
@@ -91,44 +102,66 @@ function DailyWorkSheet({ id, dateOrders }) {
                 setLoading(false);
             }
         }
+
         fetchInfo();
     }, [id, dateOrders]);
 
     if (loading) return <Text>Loading...</Text>;
     if (error) return <Text>{error}</Text>;
-    if (!data.length) return <Document> <Page size="A4" style={styles.page}><Text>Aucun travail pour aujourd'hui.</Text></Page></Document>;
+    if (!data.length) return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <Text>Aucun travail pour aujourd'hui.</Text>
+            </Page>
+        </Document>
+    );
+
+    const sortedData = [...data].sort((a, b) => new Date(a.deliveryDate) - new Date(b.deliveryDate));
 
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.headerContainer}>
                     <Image style={styles.logo} src="/logo.png" />
-                    <Text style={styles.headerText}>Fiche de Travail - Ramasse</Text>
+                    <Text style={styles.headerText}>Fiche de Travail - Ramassage</Text>
                     <Text style={styles.headerDate}>
-                        {dateOrders ? new Date(dateOrders).toLocaleDateString() : new Date().toLocaleDateString()}
+                        Date : {new Date(dateOrders).toLocaleDateString()}
                     </Text>
                 </View>
-                <View style={styles.totalLigne}>
-                    {data.map((item, index) => (
-                        <View key={index} style={styles.ligne}>
-                            <View>
-                                <Text style={styles.textLigne}>{index + 1}/enl - {item.type}</Text>
-                                <Text style={styles.textLigne}>Adresses : {item.pickupAddress} à {item.deliveryAddress}</Text>
-                                <Text style={styles.textLigne2}>Instructions spéciales :</Text>
-                                <Text style={styles.textLigne3ins}>{item.specialInstructions}</Text>
-                            </View>
-                            <View style={styles.infoOrder}>
-                                <Text style={styles.textLigneInfo}>UM : {item.dimensions}</Text>
-                                <Text style={styles.textLigneInfo}>REF : {item.ref}</Text>
-                                <Text style={styles.textLigneInfo}>P(Kgs) : {item.weight}</Text>
-                                <Text style={styles.textLigneInfo}>Details : {item.details}</Text>
-                            </View>
-                            <View style={styles.infoOrder}>
-                                <Text style={styles.textLigneInfo}>Date liv/heur : {new Date(item.deliveryDate).toLocaleDateString()} à {new Date(item.deliveryDate).toLocaleTimeString()}</Text>
-                            </View>
-                        </View>
-                    ))}
-                </View>
+
+                {sortedData.map((item, index) => (
+                    <View key={index} style={styles.taskContainer}>
+                        <Text style={styles.taskHeader}>
+                            Tâche #{index + 1} - enl / {item.type}
+                        </Text>
+
+                        <Text style={styles.taskInfo}>
+                            <Text style={styles.boldText}>Adresses :</Text>{' '}
+                            <Text style={styles.highlightedText}>{item.pickupAddress}</Text> à{' '}
+                            <Text style={styles.highlightedText}>{item.deliveryAddress}</Text>
+                        </Text>
+
+                        {item.specialInstructions && (
+                            <Text style={styles.taskInfo}>
+                                <Text style={styles.boldText}>Instructions :</Text> {item.specialInstructions}
+                            </Text>
+                        )}
+
+                        <Text style={styles.taskInfo}>
+                            <Text style={styles.boldText}>Référence :</Text> {item.ref} |
+                            <Text style={styles.boldText}> Poids :</Text> {item.weight} kg |
+                            <Text style={styles.boldText}> UM :</Text> {item.dimensions}
+                        </Text>
+                        <Text style={styles.taskInfo}>
+                            <Text style={styles.boldText}>Date et Heure :</Text> {new Date(item.deliveryDate).toLocaleDateString()} à{' '}
+                            {new Date(item.deliveryDate).toLocaleTimeString()}
+                        </Text>
+                    </View>
+                ))}
+
+                <Text style={styles.footer}>
+                    Ce document a été généré automatiquement. Veuillez vérifier les informations avant utilisation.
+                </Text>
             </Page>
         </Document>
     );
