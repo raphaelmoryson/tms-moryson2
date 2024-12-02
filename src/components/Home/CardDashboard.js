@@ -10,7 +10,6 @@ function CardDashboard() {
     const { data: orders, loading, error } = useFetchReducer('api/orders');
     const ordersInProgress = orders.filter((order) => order.status === "IN_PROGRESS");
     const ordersDelivred = orders.filter((order) => order.status === "DELIVERED");
-    const ordersCompleted = orders.filter((order) => order.status === "COMPLETED");
     const ordersToday = orders.filter((order) => {
         const deliveryDate = new Date(order.deliveryDate);
         const today = new Date();
@@ -21,11 +20,9 @@ function CardDashboard() {
         );
     });
 
-    // Données fictives pour l'exemple :
     const driversAvailable = 12;
     const trucksInUse = 25;
-    const pendingShipments = 18;
-    const warehousesOccupied = 3;
+
 
     return (
         <div className='moryson_card_dashboard_container'>
@@ -37,7 +34,6 @@ function CardDashboard() {
                 details={[
                     { label: "En cours", value: ordersInProgress.length },
                     { label: "Livrées", value: ordersDelivred.length },
-                    { label: "Terminées", value: ordersCompleted.length },
                 ]}
             />
 
@@ -65,7 +61,7 @@ function CardDashboard() {
             {/* Camions en cours d'utilisation */}
             <Card
                 icon={<MdLocalShipping aria-label="Trucks Icon" />}
-                title="Camions en cours"
+                title="Camions en cours d'utilisation"
                 percentage={`${trucksInUse}`}
                 details={[
                     { label: "En transit", value: 15 },
@@ -73,27 +69,9 @@ function CardDashboard() {
                 ]}
             />
 
-            {/* Entrepôts */}
-            <Card
-                icon={<FaWarehouse aria-label="Warehouses Icon" />}
-                title="Entrepôts"
-                percentage={`${warehousesOccupied}`}
-                details={[
-                    { label: "Entrepôts pleins", value: warehousesOccupied },
-                    { label: "Capacité totale", value: 10 },
-                ]}
-            />
 
-            {/* Expéditions en attente */}
-            <Card
-                icon={<FaRoute aria-label="Pending Shipments Icon" />}
-                title="Expéditions en attente"
-                percentage={`${pendingShipments}`}
-                details={[
-                    { label: "En attente de chargement", value: 12 },
-                    { label: "En attente de validation", value: 6 },
-                ]}
-            />
+
+
         </div>
     );
 }

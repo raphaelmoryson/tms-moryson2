@@ -11,6 +11,7 @@ import { BsFileEarmarkPersonFill, BsFillFileEarmarkPersonFill } from "react-icon
 import Image from 'next/image';
 
 import logo from '@/images/logo.png'
+import { useRouter } from 'next/router';
 
 function Navbar() {
     const navbarLinks = [
@@ -57,7 +58,7 @@ function Navbar() {
             queryPath: "reports",
         },
     ];
-
+    const router = useRouter()
     return (
         <div className='navbar_container'>
             <div className='navbar_list'>
@@ -66,8 +67,8 @@ function Navbar() {
                 </div>
                 <ul>
                     {navbarLinks.map((link, index) => (
-                        <li key={index}>
-                            <Link className='navbar_link' href={{
+                        <li key={index} className={`${router.query.path == link.queryPath ? "active" : ""}`}>
+                            <Link className={`navbar_link`} href={{
                                 pathname: link.pathname,
                                 query: { path: link.queryPath }
                             }}>

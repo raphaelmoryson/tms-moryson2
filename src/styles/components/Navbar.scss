@@ -1,5 +1,5 @@
 .navbar_container {
-    width: 20vw; 
+    width: 20vw;
     height: 100vh;
     background-color: $mrs;
     display: flex;
@@ -38,13 +38,13 @@
         display: flex;
         flex-direction: column;
         margin-top: 20px;
-        
+
         .logo {
             display: flex;
             justify-content: center;
-            
+
             img {
-                width: clamp(120px, 12vw, 155px); 
+                width: clamp(120px, 12vw, 155px);
                 height: auto;
                 margin-bottom: 20px;
             }
@@ -60,6 +60,8 @@
                 align-items: center;
                 transition: background-color 0.3s;
 
+      
+
                 &:hover {
                     background-color: lighten($mrs, 10%);
                     border-radius: 5px;
@@ -70,13 +72,13 @@
                     align-items: center;
                     padding: 10px;
                     color: white;
-                    font-size: clamp(0.9em, 1.5vw, 1em); 
+                    font-size: clamp(0.9em, 1.5vw, 1em);
                     text-decoration: none;
                     transition: color 0.3s;
 
                     svg {
                         margin-right: 10px;
-                        font-size: clamp(1.2em, 2vw, 1.8em); 
+                        font-size: clamp(1.2em, 2vw, 1.8em);
                     }
 
                     &:hover {
@@ -87,9 +89,13 @@
         }
     }
 }
-
+.active {
+    background-color: lighten($mrs, 10%);
+    border-radius: 5px;
+}
 .burger-icon {
     display: none;
+
     @media screen and (max-width: 768px) {
         display: block;
         font-size: 2em;
