@@ -12,6 +12,7 @@ function Dashboard() {
       content: <FaPrint />
     },
   ]
+
   return (
     <Area name={"Tableau de bord"} button={button}>
       <CardDashboard />
