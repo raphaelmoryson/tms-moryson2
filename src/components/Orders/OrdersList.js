@@ -38,45 +38,6 @@ function OrdersList() {
     const sortedOrders = [...filteredOrders].sort((a, b) => {
         let aValue, bValue;
 
-        switch (sortCriterion) {
-            case 'details':
-                aValue = a.details.toLowerCase();
-                bValue = b.details.toLowerCase();
-                break;
-            case 'pickupAddress':
-                aValue = a.pickupAddress.toLowerCase();
-                bValue = b.pickupAddress.toLowerCase();
-                break;
-            case 'deliveryAddress':
-                aValue = a.deliveryAddress.toLowerCase();
-                bValue = b.deliveryAddress.toLowerCase();
-                break;
-            case 'quantity':
-                aValue = parseInt(a.quantity);
-                bValue = parseInt(b.quantity);
-                break;
-            case 'weight':
-                aValue = parseFloat(a.weight);
-                bValue = parseFloat(b.weight);
-                break;
-            case 'status':
-                aValue = a.status;
-                bValue = b.status;
-                break;
-            case 'deliveryDate':
-                aValue = new Date(a.deliveryDate).getTime();
-                bValue = new Date(b.deliveryDate).getTime();
-                break;
-            case 'driverName':
-                aValue = a.driver.name.toLowerCase();
-                bValue = b.driver.name.toLowerCase();
-                break;
-            default:
-                aValue = a.details;
-                bValue = b.details;
-                break;
-        }
-
         return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
     });
 
@@ -117,9 +78,9 @@ function OrdersList() {
                         <div className="table-cell">Adresse</div>
                         <div className="table-cell">Quantité</div>
                         <div className="table-cell">Poids (kg)</div>
-                        <div className="table-cell">Statut</div>
                         <div className="table-cell">Date de Livraison</div>
                         <div className="table-cell">Chauffeur</div>
+                        <div className="table-cell">Statut</div>
                         <div className="table-cell">Action</div>
                     </div>
                 </div>
@@ -128,16 +89,15 @@ function OrdersList() {
                         <div key={order.id} className="table-row">
                             <div className="table-cell">{order.details}</div>
                             <div className="table-cell"><b>{order.pickupAddress}</b> à <b>{order.deliveryAddress}</b></div>
-
                             <div className="table-cell">{order.quantity} Palettes</div>
                             <div className="table-cell">{order.weight}kg</div>
+                            <div className="table-cell">
+                                {order.status == "IN_PROGRESS" && new Date() > new Date(order.deliveryDate) ? <p style={{ fontWeight: "600", color: "#013368" }}>{new Date(order.deliveryDate).toLocaleDateString()}</p> : <>{new Date(order.deliveryDate).toLocaleDateString()}</>}
+                            </div>
+                            <div className="table-cell">{order.driver.name}</div>
                             <div className={`table-cell status ${order.status === 'DELIVERED' ? 'status-delivered' : 'status-in-progress'}`}>
                                 {order.status === "IN_PROGRESS" ? "En cours" : "Livré"}
                             </div>
-                            <div className="table-cell">
-                                {order.status == "IN_PROGRESS" && new Date() > new Date(order.deliveryDate) ? <p style={{ fontWeight: "600", color: "red" }}>{new Date(order.deliveryDate).toLocaleDateString()}</p> : <>{new Date(order.deliveryDate).toLocaleDateString()}</>}
-                            </div>
-                            <div className="table-cell">{order.driver.name}</div>
                             <div className="table-cell" style={{ display: "flex", flexDirection: "column" }}>
                                 <Link href={`/orders/${order.id}`}>
                                     Voir

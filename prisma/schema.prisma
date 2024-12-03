@@ -31,14 +31,17 @@ model Vehicle {
   licensePlate String        @unique
   type         String
   capacity     Float
+  driver       Driver?       @relation(fields: [driverId], references: [id])
+  driverId     Int?
   maintenance  Maintenance[]
 }
 
 model Driver {
-  id     Int     @id @default(autoincrement())
-  name   String
-  role   String
-  orders Order[]
+  id      Int       @id @default(autoincrement())
+  name    String
+  role    String
+  orders  Order[]
+  Vehicle Vehicle[]
 }
 
 model Customer {

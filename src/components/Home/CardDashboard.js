@@ -10,6 +10,13 @@ function CardDashboard() {
     const { data: orders, loading, error } = useFetchReducer('api/orders');
     const ordersInProgress = orders.filter((order) => order.status === "IN_PROGRESS");
     const ordersDelivred = orders.filter((order) => order.status === "DELIVERED");
+    // OTHER
+    const ordersTypeCh = orders.filter((order) => order.type === "chargement");
+    const ordersTypeLv = orders.filter((order) => order.type === "livraison");
+
+ 
+
+
     const ordersToday = orders.filter((order) => {
         const deliveryDate = new Date(order.deliveryDate);
         const today = new Date();
@@ -43,7 +50,8 @@ function CardDashboard() {
                 title="Commandes du jour"
                 percentage={`${ordersToday.length}`}
                 details={[
-                    { label: "À livrer", value: ordersToday.length },
+                    { label: "À livrer", value: ordersTypeLv.length },
+                    { label: "À charger", value: ordersTypeCh.length },
                 ]}
             />
 
