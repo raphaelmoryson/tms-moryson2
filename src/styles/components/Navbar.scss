@@ -1,105 +1,106 @@
-.navbar_container {
-    width: 20vw;
-    height: 100vh;
-    background-color: $mrs;
+/* Global Styles for Sidebar */
+.layout {
     display: flex;
-    flex-direction: column;
-    padding: 20px 10px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    height: 100vh;
 
-    @media screen and (min-width: 1424px) {
-        width: 15vw;
-    }
+    .sidebar_container {
+        width: 250px;
+        background-color: #013368;
+        transition: width 0.3s ease;
 
-    @media screen and (max-width: 1024px) {
-        width: 25vw;
-    }
-
-    @media screen and (max-width: 768px) {
-        width: 100vw;
-        height: auto;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 10px;
-
-        .navbar_list {
-            flex-direction: row;
-            align-items: center;
-            overflow-x: auto;
-            width: 100%;
+        &.collapsed {
+            width: 60px;
         }
-    }
 
-    .navbar_list {
-        display: flex;
-        flex-direction: column;
-        margin-top: 20px;
-
-        .logo {
+        .sidebar_header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #013368;
+            color: white;
+            position: relative;
 
-            img {
-                width: clamp(120px, 12vw, 155px);
-                height: auto;
-                margin-bottom: 20px;
+            .logo {
+                display: flex;
+                align-items: center;
+                transition: opacity 0.3s ease;
+
+                img {
+                    height: 110px;
+                    width: 200px;
+                    transition: max-width 0.3s ease;
+                }
+            }
+
+            .collapse_btn {
+                background: transparent;
+                border: none;
+                font-size: 1.5rem;
+                font-weight: bold;
+                cursor: pointer;
+                color: white;
+                transition: color 0.3s ease;
+
+                &.collapsed-true {
+                    color: white; /* Bleu lorsque la sidebar est fermée */
+                }
+
+                &.collapsed-false {
+                    color: white; /* Blanc lorsque la sidebar est ouverte */
+                }
+
+                &:hover {
+                    transform: scale(1.2);
+                }
             }
         }
 
-        ul {
+        .sidebar_list {
             padding: 0;
-            list-style-type: none;
+            list-style: none;
+            margin-top: 20px;
 
-            li {
-                margin-top: 15px;
-                display: flex;
-                align-items: center;
-                transition: background-color 0.3s;
-
-      
-
-                &:hover {
-                    background-color: lighten($mrs, 10%);
-                    border-radius: 5px;
-                }
-
-                .navbar_link {
+            .sidebar_item {
+                a {
                     display: flex;
                     align-items: center;
-                    padding: 10px;
+                    padding: 15px;
                     color: white;
-                    font-size: clamp(0.9em, 1.5vw, 1em);
                     text-decoration: none;
-                    transition: color 0.3s;
+                    transition: background-color 0.3s ease;
+
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.1);
+                    }
+
+                    .sidebar_link {
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+                    }
 
                     svg {
                         margin-right: 10px;
-                        font-size: clamp(1.2em, 2vw, 1.8em);
                     }
 
-                    &:hover {
+                    span {
+                        display: block;
+                    }
+                }
+
+                &.active {
+                    background-color: rgba(255, 255, 255, 0.1);
+                    font-weight: bold;
+                }
+
+                .sidebar_link {
+                    .icon {
                         color: white;
                     }
                 }
             }
         }
     }
-}
-.active {
-    background-color: lighten($mrs, 10%);
-    border-radius: 5px;
-}
-.burger-icon {
-    display: none;
 
-    @media screen and (max-width: 768px) {
-        display: block;
-        font-size: 2em;
-        color: white;
-        cursor: pointer;
-    }
 }

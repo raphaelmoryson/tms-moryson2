@@ -2,14 +2,47 @@ import useFetchReducer from '@/useFetchReducer';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { MenuItem, TextField, Button, Paper, Typography, Grid } from '@mui/material';
+import { styled } from '@mui/system';
 import WorkSheetDocument from '@/pages/orders/worksheet/worksheetPDF';
 
 const PDFDownloadLink = dynamic(() => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink), { ssr: false });
 
+const PRIMARY_COLOR = "#013368";
+
+const TableContainer = styled(Paper)({
+    padding: '2rem',
+    marginTop: '2rem',
+    borderRadius: '8px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+});
+
+const TableHeader = styled('div')({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(8, 1fr)',
+    background: PRIMARY_COLOR,
+    color: '#fff',
+    padding: '1rem',
+    fontWeight: 'bold',
+    textAlign: 'center',
+});
+
+const TableRow = styled('div')({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(8, 1fr)',
+    padding: '1rem',
+    borderBottom: '1px solid #ddd',
+    alignItems: 'center',
+});
+
+const FilterContainer = styled('div')({
+    display: 'flex',
+    gap: '1rem',
+    marginBottom: '1.5rem',
+});
+
 function OrdersList() {
     const { data: orders, loading, error } = useFetchReducer('api/orders');
-    const [sortCriterion, setSortCriterion] = useState('details');
-    const [sortDirection, setSortDirection] = useState('asc');
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [drivers, setDrivers] = useState([]);
     const [selectedDriver, setSelectedDriver] = useState('');
@@ -32,89 +65,99 @@ function OrdersList() {
         setFilteredOrders(filtered);
     }, [selectedDriver, selectedStatus, orders]);
 
-    if (loading) return <p>Loading orders...</p>;
-    if (error) return <p>Error fetching orders: {error}</p>;
-
-    const sortedOrders = [...filteredOrders].sort((a, b) => {
-        let aValue, bValue;
-
-        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-    });
-
-    const handleDriverChange = (event) => {
-        setSelectedDriver(event.target.value);
-    };
-
-    const handleStatusChange = (event) => {
-        setSelectedStatus(event.target.value);
-    };
+    if (loading) return <Typography>Chargement des commandes...</Typography>;
+    if (error) return <Typography color="error">Erreur lors du chargement des commandes.</Typography>;
 
     return (
-        <div className="orders-list">
+        <Paper style={{ padding: '2rem', marginTop: '2rem', borderRadius: '8px' }}>
 
-            <div className="filter-controls">
-                <label>Filtrer par Chauffeur :</label>
-                <select value={selectedDriver} onChange={handleDriverChange}>
-                    <option value="">Tous les chauffeurs</option>
-                    {drivers.map((driver, index) => (
-                        <option key={index} value={driver}>
-                            {driver}
-                        </option>
-                    ))}
-                </select>
+            {/* Filter section */}
+            <Grid container spacing={3} mb={2}>
+                <Grid item xs={12} sm={6} md={4}>
+                    <TextField
+                        select
+                        label="Filtrer par Chauffeur"
+                        value={selectedDriver}
+                        onChange={e => setSelectedDriver(e.target.value)}
+                        fullWidth
+                    >
+                        <MenuItem value="">Tous les chauffeurs</MenuItem>
+                        {drivers.map((driver, index) => (
+                            <MenuItem key={index} value={driver}>{driver}</MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
 
-                <label>Filtrer par Statut :</label>
-                <select value={selectedStatus} onChange={handleStatusChange}>
-                    <option value="">Tous les statuts</option>
-                    <option value="IN_PROGRESS">En cours</option>
-                    <option value="DELIVERED">Livré</option>
-                </select>
-            </div>
+                <Grid item xs={12} sm={6} md={4}>
+                    <TextField
+                        select
+                        label="Filtrer par Statut"
+                        value={selectedStatus}
+                        onChange={e => setSelectedStatus(e.target.value)}
+                        fullWidth
+                    >
+                        <MenuItem value="">Tous les statuts</MenuItem>
+                        <MenuItem value="IN_PROGRESS">En cours</MenuItem>
+                        <MenuItem value="DELIVERED">Livré</MenuItem>
+                    </TextField>
+                </Grid>
+            </Grid>
 
-            <div className="table">
-                <div className="table-header">
-                    <div className="table-row">
-                        <div className="table-cell">Détails</div>
-                        <div className="table-cell">Adresse</div>
-                        <div className="table-cell">Quantité</div>
-                        <div className="table-cell">Poids (kg)</div>
-                        <div className="table-cell">Date de Livraison</div>
-                        <div className="table-cell">Chauffeur</div>
-                        <div className="table-cell">Statut</div>
-                        <div className="table-cell">Action</div>
+            {/* Table header */}
+            <TableHeader>
+                <div>Détails</div>
+                <div>Adresse</div>
+                <div>Quantité</div>
+                <div>Poids (kg)</div>
+                <div>Date de Livraison</div>
+                <div>Chauffeur</div>
+                <div>Statut</div>
+                <div>Action</div>
+            </TableHeader>
+
+            {/* Orders List */}
+            {filteredOrders.map(order => (
+                <TableRow key={order.id}>
+                    <div>{order.details}</div>
+                    <div>
+                        <b>{order.pickupAddress}</b> à <b>{order.deliveryAddress}</b>
                     </div>
-                </div>
-                <div className="table-body">
-                    {sortedOrders.map((order) => (
-                        <div key={order.id} className="table-row">
-                            <div className="table-cell">{order.details}</div>
-                            <div className="table-cell"><b>{order.pickupAddress}</b> à <b>{order.deliveryAddress}</b></div>
-                            <div className="table-cell">{order.quantity} Palettes</div>
-                            <div className="table-cell">{order.weight}kg</div>
-                            <div className="table-cell">
-                                {order.status == "IN_PROGRESS" && new Date() > new Date(order.deliveryDate) ? <p style={{ fontWeight: "600", color: "#013368" }}>{new Date(order.deliveryDate).toLocaleDateString()}</p> : <>{new Date(order.deliveryDate).toLocaleDateString()}</>}
-                            </div>
-                            <div className="table-cell">{order.driver.name}</div>
-                            <div className={`table-cell status ${order.status === 'DELIVERED' ? 'status-delivered' : 'status-in-progress'}`}>
-                                {order.status === "IN_PROGRESS" ? "En cours" : "Livré"}
-                            </div>
-                            <div className="table-cell" style={{ display: "flex", flexDirection: "column" }}>
-                                <Link href={`/orders/${order.id}`}>
-                                    Voir
-                                </Link>
-                                <PDFDownloadLink
-                                    document={<WorkSheetDocument orderDetails={order} />}
-                                    fileName={`fiche_de_travail_${order.id}.pdf`}>
-                                    {({ blob, url, loading, error }) =>
-                                        loading ? 'Loading document...' : 'Fiche travail'
-                                    }
-                                </PDFDownloadLink>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+                    <div>{order.quantity} Palettes</div>
+                    <div>{order.weight}kg</div>
+                    <div style={{ color: order.status === 'IN_PROGRESS' ? PRIMARY_COLOR : '#000' }}>
+                        {new Date(order.deliveryDate).toLocaleDateString()}
+                    </div>
+                    <div>{order.driver.name}</div>
+                    <div
+                        style={{
+                            color: order.status === 'DELIVERED' ? 'green' : PRIMARY_COLOR,
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        {order.status === "IN_PROGRESS" ? "En cours" : "Livré"}
+                    </div>
+                    <div>
+                        <Link href={`/orders/${order.id}`}>
+                            <Button variant="outlined" color="primary" size="small">
+                                Voir
+                            </Button>
+                        </Link>
+                        <PDFDownloadLink
+                            document={<WorkSheetDocument orderDetails={order} />}
+                            fileName={`fiche_de_travail_${order.id}.pdf`}
+                        >
+                            {({ loading }) =>
+                                loading ? 'Génération...' : (
+                                    <Button variant="contained" color="secondary" size="small">
+                                        Télécharger
+                                    </Button>
+                                )
+                            }
+                        </PDFDownloadLink>
+                    </div>
+                </TableRow>
+            ))}
+        </Paper>
     );
 }
 
