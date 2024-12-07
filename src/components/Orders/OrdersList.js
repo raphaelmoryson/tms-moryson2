@@ -71,7 +71,6 @@ function OrdersList() {
     return (
         <Paper style={{ padding: '2rem', marginTop: '2rem', borderRadius: '8px' }}>
 
-            {/* Filter section */}
             <Grid container spacing={3} mb={2}>
                 <Grid item xs={12} sm={6} md={4}>
                     <TextField

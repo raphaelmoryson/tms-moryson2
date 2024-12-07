@@ -3,17 +3,14 @@ import React, { useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import DailyWorkSheet from '@/pages/orders/worksheet/DailyWorkSheet';
-import { DataGridPro } from '@mui/x-data-grid-pro';
-import Box from '@mui/material/Box';
-import { useDemoData } from '@mui/x-data-grid-generator';
-
-const PDFDownloadLink = dynamic(() => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink), { ssr: false });
+import { Box, Button, TextField, Typography, useMediaQuery, Grid } from '@mui/material';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
 function DriversList() {
-
     const [worksheetDate, setWorksheetDate] = useState(new Date().toISOString().split('T')[0]);
     const [confirmedDate, setConfirmedDate] = useState(null);
     const { data: drivers, loading, error } = useFetchReducer('api/drivers');
+
 
     const handleDateChange = (e) => {
         setWorksheetDate(e.target.value);
@@ -28,26 +25,45 @@ function DriversList() {
     if (error) return <div>Error loading drivers</div>;
 
     return (
-        <div className={"container"}>
-            <div className={"driversFlex"}>
+        <Box className="container" sx={4}>
+            <Grid container spacing={4}>
                 {drivers?.map((driver) => (
-                    <div key={driver.id} className={"driverCard"}>
-                        <FaUserCircle className={"icon"} />
-                        <div className={"driverInfo"}>
-                            <h2 className={"driverName"}>{driver.name}</h2>
-                            <p>Date de fiche de travail :</p>
-                            <input
+                    <Grid item xs={12} sm={6} md={4} key={driver.id}>
+                        <Box
+                            sx={{
+                                border: '1px solid #ddd',
+                                borderRadius: 2,
+                                padding: 2,
+                                boxShadow: 3,
+                                textAlign: 'center',
+                                backgroundColor: '#fff',
+                            }}
+                        >
+                            <FaUserCircle style={{ fontSize: '3rem', color: '#3f51b5' }} />
+                            <Typography variant="h6" sx={{ mt: 2 }}>
+                                {driver.name}
+                            </Typography>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                Date de fiche de travail :
+                            </Typography>
+                            <TextField
                                 type="date"
                                 value={worksheetDate}
                                 onChange={handleDateChange}
+                                fullWidth
+                                variant="outlined"
+                                size="small"
+                                sx={{ mb: 2 }}
                             />
-                            <button
+                            <Button
                                 onClick={handleDateConfirm}
-                                className={"workSheetButton"}
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                sx={{ mb: 2 }}
                             >
                                 Définir la date
-                            </button>
-        
+                            </Button>
 
                             {confirmedDate && (
                                 <PDFDownloadLink
@@ -55,19 +71,33 @@ function DriversList() {
                                     fileName={`travail_${driver.name}_${confirmedDate}.pdf`}
                                 >
                                     {({ blob, url, loading, error }) =>
-                                        loading ? 'Chargement...' : (
-                                            <button className={"workSheetButton"} style={{ margin: "5px 0" }}>
+                                        loading ? (
+                                            <Button
+                                                variant="outlined"
+                                                fullWidth
+                                                sx={{ mb: 2 }}
+                                                disabled
+                                            >
+                                                Chargement...
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="outlined"
+                                                color="secondary"
+                                                fullWidth
+                                                sx={{ mb: 2 }}
+                                            >
                                                 Télécharger Fiche de Travail
-                                            </button>
+                                            </Button>
                                         )
                                     }
                                 </PDFDownloadLink>
                             )}
-                        </div>
-                    </div>
+                        </Box>
+                    </Grid>
                 ))}
-            </div>
-        </div>
+            </Grid>
+        </Box>
     );
 }
 
