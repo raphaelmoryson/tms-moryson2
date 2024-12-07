@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { TextField, Button, Box, Grid, Typography, CircularProgress } from '@mui/material';
 
 function CreateCustomerForm() {
     const [siren, setSiren] = useState('');
@@ -17,7 +18,11 @@ function CreateCustomerForm() {
         apeCode: '',
     });
 
+    const [loading, setLoading] = useState(false);
+
+    // Fetch company information based on SIREN
     const getSiren = async () => {
+        setLoading(true);
         try {
             let response = await fetch(`/api/proxy?siren=${siren}`);
             if (!response.ok) {
@@ -39,9 +44,9 @@ function CreateCustomerForm() {
                 postalCode: data.unite_legale.etablissement_siege.code_postal,
                 country: 'France',
             });
-            console.log(data.unite_legale)
+
             const etatAdministratif = data.unite_legale.etat_administratif;
-            console.log(etatAdministratif)
+            console.log(etatAdministratif);
             if (etatAdministratif === 'A') {
                 console.log("L'entreprise est active.");
             } else if (etatAdministratif === 'C') {
@@ -51,9 +56,10 @@ function CreateCustomerForm() {
             } else if (etatAdministratif === 'V') {
                 console.log("L'entreprise a été radiée.");
             }
-
         } catch (error) {
             console.error("Error fetching SIREN data:", error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -86,157 +92,183 @@ function CreateCustomerForm() {
     };
 
     return (
-        <div className="form-container" style={{ height: '750px', overflowY: 'scroll' }}>
+        <Box sx={{ padding: 3, height: '500px', overflowY: 'scroll' }}>
+            <Box sx={{ marginBottom: 3 }}>
+                <Typography variant="h6" gutterBottom>Insérer le siren (les informations seront directement insérées)</Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={8}>
+                        <TextField
+                            fullWidth
+                            label="SIREN"
+                            variant="outlined"
+                            value={siren}
+                            onChange={(e) => setSiren(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={getSiren}
+                            fullWidth
+                            disabled={loading}
+                        >
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Insérer les infos'}
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Box>
+
+            {/* Main customer data form */}
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="sirenGet">Insérer le siren (les info seront directement insérées)</label>
-                    <input
-                        type="text"
-                        id="sirenGet"
-                        name="sirenGet"
-                        value={siren}
-                        onChange={(e) => setSiren(e.target.value)}
-                    />
-                    <button type="button" onClick={getSiren}>Insérer les info</button>
-                </div>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Name"
+                            name="name"
+                            variant="outlined"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Company"
+                            name="company"
+                            variant="outlined"
+                            value={formData.company}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Address"
+                            name="address"
+                            variant="outlined"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Postal Code"
+                            name="postalCode"
+                            variant="outlined"
+                            value={formData.postalCode}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="City"
+                            name="city"
+                            variant="outlined"
+                            value={formData.city}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Country"
+                            name="country"
+                            variant="outlined"
+                            value={formData.country}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            variant="outlined"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Phone"
+                            name="phone"
+                            variant="outlined"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="SIREN Number"
+                            name="siren"
+                            variant="outlined"
+                            value={formData.siren}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="SIRET Number"
+                            name="siret"
+                            variant="outlined"
+                            value={formData.siret}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="APE Code"
+                            name="apeCode"
+                            variant="outlined"
+                            value={formData.apeCode}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                        >
+                            Create Customer
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
-
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="company">Company</label>
-                    <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="address">Address</label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="postalCode">Postal Code</label>
-                    <input
-                        type="text"
-                        id="postalCode"
-                        name="postalCode"
-                        value={formData.postalCode}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="city">City</label>
-                    <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="country">Country</label>
-                    <input
-                        type="text"
-                        id="country"
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="siren">SIREN Number</label>
-                    <input
-                        type="text"
-                        id="siren"
-                        name="siren"
-                        value={formData.siren}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="siret">SIRET Number</label>
-                    <input
-                        type="text"
-                        id="siret"
-                        name="siret"
-                        value={formData.siret}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="apeCode">APE Code</label>
-                    <input
-                        type="text"
-                        id="apeCode"
-                        name="apeCode"
-                        value={formData.apeCode}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-
-                <button type="submit" className="submit-btn">Create Customer</button>
-            </form>
-        </div>
+        </Box>
     );
 }
 
