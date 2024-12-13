@@ -136,3 +136,13 @@ $header-bg-color: #eaeaea;
         }
     }
 }
+
+@media (max-width:767px){
+    .tableCollumn {
+        display: flex!important;
+        flex-direction: column!important;
+        div {
+            margin: 10px 0;
+        }
+    }
+}

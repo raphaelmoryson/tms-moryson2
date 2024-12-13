@@ -25,6 +25,10 @@ body {
     padding: 30px;
     width: 100%;
 
+    @media (max-width:767px) {
+        padding: 5px;
+    }
+
     .moryson_area_top {
         display: flex;
         flex-direction: row;
@@ -48,6 +52,6 @@ body {
     .moryson_area_index {
         margin-top: 10px;
         width: 100%;
-        height: 95%;
+
     }
 }

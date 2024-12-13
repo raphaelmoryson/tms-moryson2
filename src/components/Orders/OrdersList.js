@@ -2,44 +2,35 @@ import useFetchReducer from '@/useFetchReducer';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { MenuItem, TextField, Button, Paper, Typography, Grid } from '@mui/material';
+import {
+    MenuItem, TextField, Button, Paper, Typography, Grid, Box, CircularProgress,
+} from '@mui/material';
 import { styled } from '@mui/system';
 import WorkSheetDocument from '@/pages/orders/worksheet/worksheetPDF';
 
-const PDFDownloadLink = dynamic(() => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink), { ssr: false });
+const PDFDownloadLink = dynamic(
+    () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+    { ssr: false }
+);
 
 const PRIMARY_COLOR = "#013368";
 
-const TableContainer = styled(Paper)({
-    padding: '2rem',
-    marginTop: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-});
+const TableContainer = styled(Paper)(({ theme }) => ({
+    marginTop: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
+    height: "600px",
+    overflowY: "auto",
+}));
 
-const TableHeader = styled('div')({
+const TableRow = styled(Box)(({ theme }) => ({
     display: 'grid',
-    gridTemplateColumns: 'repeat(8, 1fr)',
-    background: PRIMARY_COLOR,
-    color: '#fff',
-    padding: '1rem',
-    fontWeight: 'bold',
-    textAlign: 'center',
-});
-
-const TableRow = styled('div')({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(8, 1fr)',
-    padding: '1rem',
-    borderBottom: '1px solid #ddd',
+    gridTemplateColumns: '1fr 1.5fr 1fr 1fr 1fr 1fr 1fr',
+    padding: theme.spacing(0.5),
+    borderBottom: `1px solid ${theme.palette.divider}`,
     alignItems: 'center',
-});
-
-const FilterContainer = styled('div')({
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1.5rem',
-});
+    textAlign: 'center',
+}));
 
 function OrdersList() {
     const { data: orders, loading, error } = useFetchReducer('api/orders');
@@ -50,14 +41,14 @@ function OrdersList() {
 
     useEffect(() => {
         if (orders) {
-            const uniqueDrivers = [...new Set(orders.map(order => order.driver.name))];
+            const uniqueDrivers = [...new Set(orders.map((order) => order.driver.name))];
             setDrivers(uniqueDrivers);
             setFilteredOrders(orders);
         }
     }, [orders]);
 
     useEffect(() => {
-        const filtered = orders.filter(order => {
+        const filtered = orders.filter((order) => {
             const matchesDriver = selectedDriver ? order.driver.name === selectedDriver : true;
             const matchesStatus = selectedStatus ? order.status === selectedStatus : true;
             return matchesDriver && matchesStatus;
@@ -65,20 +56,20 @@ function OrdersList() {
         setFilteredOrders(filtered);
     }, [selectedDriver, selectedStatus, orders]);
 
-    if (loading) return <Typography>Chargement des commandes...</Typography>;
-    if (error) return <Typography color="error">Erreur lors du chargement des commandes.</Typography>;
+    if (loading) return <CircularProgress />;
+    if (error) return <Typography color="error">Erreur de chargement des commandes.</Typography>;
 
     return (
-        <Paper style={{ padding: '2rem', marginTop: '2rem', borderRadius: '8px' }}>
-
-            <Grid container spacing={3} mb={2}>
-                <Grid item xs={12} sm={6} md={4}>
+        <TableContainer>
+            <Grid container spacing={1} mb={1}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         select
                         label="Filtrer par Chauffeur"
                         value={selectedDriver}
-                        onChange={e => setSelectedDriver(e.target.value)}
+                        onChange={(e) => setSelectedDriver(e.target.value)}
                         fullWidth
+                        size="small"
                     >
                         <MenuItem value="">Tous les chauffeurs</MenuItem>
                         {drivers.map((driver, index) => (
@@ -87,13 +78,14 @@ function OrdersList() {
                     </TextField>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         select
                         label="Filtrer par Statut"
                         value={selectedStatus}
-                        onChange={e => setSelectedStatus(e.target.value)}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
                         fullWidth
+                        size="small"
                     >
                         <MenuItem value="">Tous les statuts</MenuItem>
                         <MenuItem value="IN_PROGRESS">En cours</MenuItem>
@@ -102,42 +94,37 @@ function OrdersList() {
                 </Grid>
             </Grid>
 
-            {/* Table header */}
-            <TableHeader>
+            <TableRow style={{ background: PRIMARY_COLOR, color: '#fff', fontWeight: 'bold' }} className='tableCollumn'>
                 <div>Détails</div>
-                <div>Adresse</div>
+                <div>Adresses</div>
                 <div>Quantité</div>
-                <div>Poids (kg)</div>
-                <div>Date de Livraison</div>
+                <div>Date</div>
                 <div>Chauffeur</div>
                 <div>Statut</div>
-                <div>Action</div>
-            </TableHeader>
+                <div>Actions</div>
+            </TableRow>
 
-            {/* Orders List */}
-            {filteredOrders.map(order => (
-                <TableRow key={order.id}>
+            {filteredOrders.map((order) => (
+                <TableRow key={order.id} className='tableCollumn'>
                     <div>{order.details}</div>
                     <div>
-                        <b>{order.pickupAddress}</b> à <b>{order.deliveryAddress}</b>
+                        <Typography variant="body2"><b>Ramasse:</b> {order.pickupAddress}</Typography>
+                        <Typography variant="body2"><b>Livraison:</b> {order.deliveryAddress}</Typography>
                     </div>
-                    <div>{order.quantity} Palettes</div>
-                    <div>{order.weight}kg</div>
-                    <div style={{ color: order.status === 'IN_PROGRESS' ? PRIMARY_COLOR : '#000' }}>
+                    <div>{order.quantity} Palettes / {order.weight} kg</div>
+                    <div style={{ color: PRIMARY_COLOR }}>
                         {new Date(order.deliveryDate).toLocaleDateString()}
                     </div>
                     <div>{order.driver.name}</div>
-                    <div
-                        style={{
-                            color: order.status === 'DELIVERED' ? 'green' : PRIMARY_COLOR,
-                            fontWeight: 'bold',
-                        }}
-                    >
+                    <div style={{
+                        color: order.status === 'DELIVERED' ? 'green' : PRIMARY_COLOR,
+                        fontWeight: 'bold',
+                    }}>
                         {order.status === "IN_PROGRESS" ? "En cours" : "Livré"}
                     </div>
                     <div>
-                        <Link href={`/orders/${order.id}`}>
-                            <Button variant="outlined" color="primary" size="small">
+                        <Link href={`/orders/${order.id}`} passHref>
+                            <Button variant="outlined" color="primary" size="small" style={{marginRight:"5px"}}>
                                 Voir
                             </Button>
                         </Link>
@@ -146,7 +133,9 @@ function OrdersList() {
                             fileName={`fiche_de_travail_${order.id}.pdf`}
                         >
                             {({ loading }) =>
-                                loading ? 'Génération...' : (
+                                loading ? (
+                                    'Génération...'
+                                ) : (
                                     <Button variant="contained" color="secondary" size="small">
                                         Télécharger
                                     </Button>
@@ -156,7 +145,7 @@ function OrdersList() {
                     </div>
                 </TableRow>
             ))}
-        </Paper>
+        </TableContainer>
     );
 }
 

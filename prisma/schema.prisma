@@ -42,6 +42,7 @@ model Driver {
   role    String
   orders  Order[]
   Vehicle Vehicle[]
+  Invoice Invoice[]
 }
 
 model Customer {
@@ -93,8 +94,12 @@ model Invoice {
   deliveryList    Json // List of deliveries
   referenceList   Json // List of references
   createdBy       String // Created by (user name)
+
+  driver   Driver? @relation(fields: [driverId], references: [id])
+  driverId Int?
+
   // order           Order?   @relation(fields: [orderId], references: [id])
-  orderId         Int?     @unique
+  // orderId         Int?     @unique
 }
 
 enum Role {
