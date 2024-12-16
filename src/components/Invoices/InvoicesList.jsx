@@ -9,8 +9,6 @@ const PRIMARY_COLOR = "#013368";
 
 const invoices = [
     { numero: "INV-2024-001", client: "Transport SARL", depart: "Paris", destination: "Lyon", totalHT: 250, totalTVA: 50, totalTTC: 300, dateCreation: "2024-12-01", dateEcheance: "2024-12-31", status: "En attente" },
-    { numero: "INV-2024-002", client: "LogiTrans", depart: "Marseille", destination: "Nice", totalHT: 350, totalTVA: 70, totalTTC: 420, dateCreation: "2024-12-05", dateEcheance: "2024-12-25", status: "Payée" },
-    { numero: "INV-2024-003", client: "FastCargo", depart: "Bordeaux", destination: "Toulouse", totalHT: 150, totalTVA: 30, totalTTC: 180, dateCreation: "2024-12-02", dateEcheance: "2024-12-22", status: "Non Payée" },
 ];
 
 const InvoiceContainer = styled(Paper)(({ theme }) => ({

@@ -42,7 +42,6 @@ model Driver {
   role    String
   orders  Order[]
   Vehicle Vehicle[]
-  Invoice Invoice[]
 }
 
 model Customer {
@@ -77,29 +76,28 @@ model Maintenance {
 
 model Invoice {
   id              Int      @id @default(autoincrement())
-  invoiceNumber   String // Invoice number
-  issuanceDate    DateTime // Date of issuance
-  dueDate         DateTime // Due date
-  customerName    String // Customer name
-  customerAddress String // Customer address
-  customerCity    String? // Customer city
-  customerZipCode String // Customer ZIP code
-  amountExclTax   Float // Amount excluding tax
-  amountVAT       Float // VAT amount
-  amountInclTax   Float // Total amount including tax
-  paymentStatus   String // Payment status
-  priceList       Json // List of prices
-  dateList        Json // List of dates
-  pickupList      Json // List of pickups
-  deliveryList    Json // List of deliveries
-  referenceList   Json // List of references
-  createdBy       String // Created by (user name)
+  invoiceNumber   String   @unique 
+  issuanceDate    DateTime  
+  dueDate         DateTime  
+  customerName    String 
+  customerAddress String 
+  customerCity    String? 
+  customerZipCode String 
+  amountExclTax   Float  
+  amountVAT       Float  
+  amountInclTax   Float 
+  paymentStatus   String   @default("Pending")  
 
-  driver   Driver? @relation(fields: [driverId], references: [id])
-  driverId Int?
-
-  // order           Order?   @relation(fields: [orderId], references: [id])
-  // orderId         Int?     @unique
+  createdBy String  
+  createdAt DateTime @default(now())  
+  updatedAt DateTime @updatedAt  
+ 
+ 
+  priceList     Json  
+  dateList      Json  
+  pickupList    Json  
+  deliveryList  Json  
+  referenceList Json  
 }
 
 enum Role {
