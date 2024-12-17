@@ -76,28 +76,27 @@ model Maintenance {
 
 model Invoice {
   id              Int      @id @default(autoincrement())
-  invoiceNumber   String   @unique 
-  issuanceDate    DateTime  
-  dueDate         DateTime  
-  customerName    String 
-  customerAddress String 
-  customerCity    String? 
-  customerZipCode String 
-  amountExclTax   Float  
-  amountVAT       Float  
-  amountInclTax   Float 
-  paymentStatus   String   @default("Pending")  
+  invoiceNumber   String   @unique
+  issuanceDate    DateTime
+  dueDate         DateTime
+  customerName    String
+  customerAddress String
+  customerCity    String?
+  customerZipCode String
+  paymentStatus   String   @default("Pending")
 
-  createdBy String  
-  createdAt DateTime @default(now())  
-  updatedAt DateTime @updatedAt  
- 
- 
-  priceList     Json  
-  dateList      Json  
-  pickupList    Json  
-  deliveryList  Json  
-  referenceList Json  
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  TotalHT   Float
+  TotalTVA  Float
+  TotalTTC  Float
+
+  priceList     Json
+  dateList      Json
+  pickupList    Json
+  deliveryList  Json
+  referenceList Json
 }
 
 enum Role {

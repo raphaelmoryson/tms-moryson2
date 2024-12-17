@@ -4,12 +4,12 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { Visibility, PictureAsPdf } from '@mui/icons-material';
+import useFetchReducer from '@/useFetchReducer';
 
 const PRIMARY_COLOR = "#013368";
 
-const invoices = [
-    { numero: "INV-2024-001", client: "Transport SARL", depart: "Paris", destination: "Lyon", totalHT: 250, totalTVA: 50, totalTTC: 300, dateCreation: "2024-12-01", dateEcheance: "2024-12-31", status: "En attente" },
-];
+
+
 
 const InvoiceContainer = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
@@ -26,6 +26,8 @@ const StatusChip = styled(Chip)(({ status }) => ({
 }));
 
 export default function InvoicesList() {
+    const { data: invoices, loading, error } = useFetchReducer('api/invoices');
+    console.log(invoices)
     return (
         <Box sx={{ p: 2, height: "calc(600px - 64px)", overflowY: "auto", overflowX: "hidden" }}>
             <div style={{ width: "100%", overflowX: "auto" }}>
@@ -33,13 +35,12 @@ export default function InvoicesList() {
                     <InvoiceContainer key={invoice.numero}>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={12} sm={6} md={2}>
-                                <Typography variant="h6"><b>#{invoice.numero}</b></Typography>
-                                <Typography variant="subtitle2">Client: {invoice.client}</Typography>
+                                <Typography variant="h6"><b>#{invoice.invoiceNumber}</b></Typography>
+                                <Typography variant="subtitle2">Client: {invoice.customerName}</Typography>
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={2}>
-                                <Typography><b>Départ:</b> {invoice.depart}</Typography>
-                                <Typography><b>Destination:</b> {invoice.destination}</Typography>
+                
                             </Grid>
 
                             <Grid item xs={6} sm={6} md={2}>

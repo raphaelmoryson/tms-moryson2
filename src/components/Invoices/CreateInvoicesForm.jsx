@@ -10,7 +10,6 @@ const PRIMARY_COLOR = "#013368";
 const FORM_STYLES = {
     padding: "2rem",
     maxWidth: "1800px",
-    margin: "2rem auto",
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
 };
@@ -26,69 +25,124 @@ const StyledButton = styled(Button)({
 function CreateInvoicesForm() {
     const { control, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
-            numero: '',
-            client: '',
-            depart: '',
-            destination: '',
-            distance: '',
-            rate: '',
-            dateCreation: '',
-            dateEcheance: '',
-            status: '',
-            services: [{ date: '', enlèvement: '', livraison: '', référence: '', prixHT: '' }]
+            invoiceNumber: '',
+            issuanceDate: '',
+            dueDate: '',
+            customerName: '',
+            TotalHT : 0,
+            TotalTVA : 0,
+            TotalTTC : 0,
+            customerAddress: '',
+            customerCity: '',
+            customerZipCode: '',
+            paymentStatus: 'Pending',
+            createdBy: '',
         }
     });
+
+    
 
     const { fields, append, remove } = useFieldArray({
         control,
         name: "services"
     });
-
-    const handleFormSubmit = (data) => {
-        console.log("Form Submitted:", data);
+    const handleFormSubmit = async (data) => {
         console.log(data)
-        reset();
+        try {
+            const response = await fetch('/api/invoices/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...data,
+                    TotalHT : 0,
+                    priceList: data.services.map(s => s.prixHT),
+                    dateList: data.services.map(s => s.date),
+                    pickupList: data.services.map(s => s.enlevement),
+                    deliveryList: data.services.map(s => s.livraison),
+                    referenceList: data.services.map(s => s.reference)
+                }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert("Facture créée avec succès !");
+                reset();
+            } else {
+                alert("Erreur: " + result.error);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la soumission:", error);
+            alert("Une erreur est survenue");
+        }
     };
 
     return (
         <Paper style={FORM_STYLES}>
-            <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: "700px", overflowY: "scroll" }}>
-                <h2 style={{ color: PRIMARY_COLOR }}>Créer une Facture</h2>
+            <form onSubmit={handleSubmit(handleFormSubmit)}>
+                {[
+                    { name: "invoiceNumber", label: "Numéro de Facture" },
+                    { name: "customerName", label: "Nom du Client" },
+                    { name: "customerAddress", label: "Adresse du Client" },
+                    { name: "customerCity", label: "Ville du Client" },
+                    { name: "customerZipCode", label: "Code Postal" },
+                    { name: "createdBy", label: "Créé Par" }
+                ].map(({ name, label }) => (
+                    <Controller
+                        key={name}
+                        name={name}
+                        control={control}
+                        rules={{ required: `${label} requis` }}
+                        render={({ field }) => (
+                            <TextField
+                                fullWidth
+                                label={label}
+                                margin="normal"
+                                {...field}
+                                error={!!errors[name]}
+                                helperText={errors[name]?.message}
+                            />
+                        )}
+                    />
+                ))}
 
                 <Controller
-                    name="numero"
+                    name="issuanceDate"
                     control={control}
-                    rules={{ required: "Numéro de facture requis" }}
+                    rules={{ required: "Date d'émission requise" }}
                     render={({ field }) => (
                         <TextField
                             fullWidth
-                            label="Numéro de Facture"
+                            label="Date d'Émission"
+                            type="date"
                             margin="normal"
+                            InputLabelProps={{ shrink: true }}
                             {...field}
-                            error={!!errors.numero}
-                            helperText={errors.numero?.message}
+                            error={!!errors.issuanceDate}
+                            helperText={errors.issuanceDate?.message}
                         />
                     )}
                 />
 
                 <Controller
-                    name="client"
+                    name="dueDate"
                     control={control}
-                    rules={{ required: "Nom du client requis" }}
+                    rules={{ required: "Date d'échéance requise" }}
                     render={({ field }) => (
                         <TextField
                             fullWidth
-                            label="Nom du Client"
+                            label="Date d'Échéance"
+                            type="date"
                             margin="normal"
+                            InputLabelProps={{ shrink: true }}
                             {...field}
-                            error={!!errors.client}
-                            helperText={errors.client?.message}
+                            error={!!errors.dueDate}
+                            helperText={errors.dueDate?.message}
                         />
                     )}
                 />
 
                 <Controller
-                    name="status"
+                    name="paymentStatus"
                     control={control}
                     render={({ field }) => (
                         <TextField
@@ -98,86 +152,39 @@ function CreateInvoicesForm() {
                             margin="normal"
                             {...field}
                         >
-                            <MenuItem value="Payée">Payée</MenuItem>
-                            <MenuItem value="Non Payée">Non Payée</MenuItem>
-                            <MenuItem value="En attente">En attente</MenuItem>
+                            <MenuItem value="Paid">Payée</MenuItem>
+                            <MenuItem value="Unpaid">Non Payée</MenuItem>
+                            <MenuItem value="Pending">En attente</MenuItem>
                         </TextField>
                     )}
                 />
 
+                {/* Services */}
                 <h3 style={{ color: PRIMARY_COLOR }}>Services</h3>
                 {fields.map((item, index) => (
                     <div key={item.id} style={{ marginBottom: "1rem", borderBottom: "1px solid #ccc", paddingBottom: "1rem" }}>
-                        <Controller
-                            name={`services[${index}].date`}
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    label="Date"
-                                    type="date"
-                                    margin="normal"
-                                    fullWidth
-                                    InputLabelProps={{ shrink: true }}
-                                    {...field}
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name={`services[${index}].enlèvement`}
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    label="Enlèvement"
-                                    margin="normal"
-                                    fullWidth
-                                    {...field}
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name={`services[${index}].livraison`}
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    label="Livraison"
-                                    margin="normal"
-                                    fullWidth
-                                    {...field}
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name={`services[${index}].référence`}
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    label="Référence"
-                                    margin="normal"
-                                    fullWidth
-                                    {...field}
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name={`services[${index}].prixHT`}
-                            control={control}
-                            rules={{
-                                validate: (value) => value > 0 || "Prix invalide"
-                            }}
-                            render={({ field }) => (
-                                <TextField
-                                    label="Prix HT (€)"
-                                    type="number"
-                                    margin="normal"
-                                    fullWidth
-                                    {...field}
-                                />
-                            )}
-                        />
+                        {[
+                            { name: "date", label: "Date", type: "date" },
+                            { name: "enlevement", label: "Enlèvement" },
+                            { name: "livraison", label: "Livraison" },
+                            { name: "reference", label: "Référence" },
+                            { name: "prixHT", label: "Prix HT (€)", type: "number" }
+                        ].map(({ name, label, type }) => (
+                            <Controller
+                                key={name}
+                                name={`services[${index}].${name}`}
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        label={label}
+                                        type={type || "text"}
+                                        margin="normal"
+                                        fullWidth
+                                        {...field}
+                                    />
+                                )}
+                            />
+                        ))}
 
                         <Button
                             variant="outlined"
@@ -193,7 +200,7 @@ function CreateInvoicesForm() {
                 <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => append({ date: '', enlèvement: '', livraison: '', référence: '', prixHT: '' })}
+                    onClick={() => append({ date: '', enlevement: '', livraison: '', reference: '', prixHT: '' })}
                     style={{ marginBottom: "1rem" }}
                 >
                     Ajouter un Service
@@ -204,7 +211,7 @@ function CreateInvoicesForm() {
                 </StyledButton>
             </form>
         </Paper>
-    )
+    );
 }
 
 export default CreateInvoicesForm;
