@@ -27,13 +27,20 @@ model Order {
 }
 
 model Vehicle {
-  id           Int           @id @default(autoincrement())
-  licensePlate String        @unique
-  type         String
-  capacity     Float
-  driver       Driver?       @relation(fields: [driverId], references: [id])
-  driverId     Int?
-  maintenance  Maintenance[]
+  id        Int      @id @default(autoincrement())
+  type      String
+  driverId  Int
+  driver    Driver   @relation(fields: [driverId], references: [id])
+  palettes  Palette[]
+}
+
+model Palette {
+  id          Int       @id @default(autoincrement())
+  nom         String
+  size        String
+  position    String
+  vehicleId   Int
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
 }
 
 model Driver {
@@ -66,13 +73,7 @@ model Customer {
   @@index([name])
 }
 
-model Maintenance {
-  id        Int      @id @default(autoincrement())
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
-  vehicleId Int
-  date      DateTime
-  details   String
-}
+
 
 model Invoice {
   id              Int      @id @default(autoincrement())

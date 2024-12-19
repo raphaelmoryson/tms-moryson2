@@ -29,9 +29,9 @@ function CreateInvoicesForm() {
             issuanceDate: '',
             dueDate: '',
             customerName: '',
-            TotalHT : 0,
-            TotalTVA : 0,
-            TotalTTC : 0,
+            TotalHT: 0,
+            TotalTVA: 0,
+            TotalTTC: 0,
             customerAddress: '',
             customerCity: '',
             customerZipCode: '',
@@ -40,7 +40,6 @@ function CreateInvoicesForm() {
         }
     });
 
-    
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -49,17 +48,29 @@ function CreateInvoicesForm() {
     const handleFormSubmit = async (data) => {
         console.log(data)
         try {
+            let priceList = data.services.map(s => s.prixHT)
+            let dateList = data.services.map(s => s.date)
+            let pickupList = data.services.map(s => s.enlevement)
+            let deliveryList = data.services.map(s => s.livraison)
+            let referenceList = data.services.map(s => s.reference)
+
+            let TotalHT = priceList.reduce((acc, ecc) => parseFloat(acc) + parseFloat(ecc))
+            let TotalTVA = TotalHT / 100 * 20
+            let TotalTTC = TotalHT + TotalTVA
             const response = await fetch('/api/invoices/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...data,
-                    TotalHT : 0,
-                    priceList: data.services.map(s => s.prixHT),
-                    dateList: data.services.map(s => s.date),
-                    pickupList: data.services.map(s => s.enlevement),
-                    deliveryList: data.services.map(s => s.livraison),
-                    referenceList: data.services.map(s => s.reference)
+                    TotalHT: TotalHT,
+                    TotalTVA: TotalTVA,
+                    TotalTTC: TotalTTC,
+                    priceList: priceList,
+                    dateList: dateList,
+                    pickupList: pickupList,
+                    deliveryList: deliveryList,
+                    referenceList: referenceList,
+
                 }),
             });
 
@@ -159,10 +170,9 @@ function CreateInvoicesForm() {
                     )}
                 />
 
-                {/* Services */}
                 <h3 style={{ color: PRIMARY_COLOR }}>Services</h3>
                 {fields.map((item, index) => (
-                    <div key={item.id} style={{ marginBottom: "1rem", borderBottom: "1px solid #ccc", paddingBottom: "1rem" }}>
+                    <div key={item.id} style={{ marginBottom: "1rem", borderBottom: "1px solid #ccc", paddingBottom: "1rem", display: "flex" }}>
                         {[
                             { name: "date", label: "Date", type: "date" },
                             { name: "enlevement", label: "Enlèvement" },
@@ -177,7 +187,7 @@ function CreateInvoicesForm() {
                                 render={({ field }) => (
                                     <TextField
                                         label={label}
-                                        type={type || "text"}
+                                        type={type}
                                         margin="normal"
                                         fullWidth
                                         {...field}

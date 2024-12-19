@@ -1,0 +1,115 @@
+// Remorque Container - Le container global qui contient tout
+.remorque-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+
+  h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .btn-ajouter {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 30px;
+
+    &:hover {
+      background-color: #45a049;
+    }
+  }
+
+  .remorque {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    min-height: 200px;
+
+    // Drop area (drag-and-drop zone)
+    &:hover {
+      border-color: #4CAF50;
+    }
+
+    .palette {
+      background-color: #c1e7c4;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 5px;
+      min-width: 150px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: move;
+
+      &:hover {
+        background-color: #9fd29e;
+      }
+
+      font-size: 1.2rem;
+      color: #333;
+    }
+  }
+
+  .input-container {
+    margin-bottom: 20px;
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 200px;
+      margin-right: 10px;
+
+      &:focus {
+        border-color: #4CAF50;
+        outline: none;
+      }
+    }
+  }
+}
+
+// Responsiveness - Pour mobile et tablettes
+@media (max-width: 768px) {
+  .remorque-container {
+    padding: 10px;
+  }
+
+  .remorque {
+    flex-direction: column;
+    align-items: center;
+    min-height: auto;
+  }
+
+  .palette {
+    margin: 5px;
+    padding: 15px;
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .remorque-container {
+    width: 100%;
+    margin: 0;
+  }
+
+  .remorque {
+    flex-direction: column;
+  }
+
+  .btn-ajouter {
+    width: 100%;
+  }
+}

@@ -14,10 +14,13 @@ export default async function handler(req, res) {
         dueDate,
         customerName,
         customerAddress,
-        customerCity = null, 
+        customerCity = null,
         customerZipCode,
-        paymentStatus = "Pending", 
+        paymentStatus = "Pending",
         createdBy,
+        TotalHT,
+        TotalTVA,
+        TotalTTC,
         priceList = [],
         dateList = [],
         pickupList = [],
@@ -26,13 +29,16 @@ export default async function handler(req, res) {
     } = req.body;
 
     if (
-        !invoiceNumber || 
-        !issuanceDate || 
-        !dueDate || 
-        !customerName || 
-        !customerAddress || 
-        !customerZipCode || 
-        !createdBy
+        !invoiceNumber ||
+        !issuanceDate ||
+        !dueDate ||
+        !customerName ||
+        !customerAddress ||
+        !customerZipCode ||
+        !createdBy,
+        !TotalHT,
+        !TotalTVA,
+        !TotalTTC
     ) {
         return res.status(400).json({ error: "Champs obligatoires manquants" });
     }
@@ -54,6 +60,9 @@ export default async function handler(req, res) {
                 pickupList,
                 deliveryList,
                 referenceList,
+                TotalHT,
+                TotalTVA,
+                TotalTTC,
             },
         });
 

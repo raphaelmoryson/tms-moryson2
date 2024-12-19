@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useState } from 'react'
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import { PDFViewer } from '@react-pdf/renderer/lib/react-pdf.browser.cjs.js';
 const styles = StyleSheet.create({
     page: {
         flexDirection: "column",
@@ -201,31 +200,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 });
-function ViewInvoice(info) {
-    const [invoice, setInvoice] = useState()
-    useEffect(() => {
-        async function fetchData() {
-            if (info.idInvoice !== NaN) {
-                fetch(`http://localhost:3000/api/invoice/${info.idInvoice}`)
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('La réponse du serveur n\'est pas OK');
-                        }
-                        return response.json(); // Parsez la réponse JSON
-                    })
-                    .then((data) => {
-                        console.log('Données récupérées avec succès :', data);
-                        setInvoice(...data);
-                    })
-                    .catch((error) => {
-                        console.error('Erreur lors de la requête GET :', error);
-                    });
-            }
-        }
-        fetchData();
-    }, [info.idInvoice]);
-    return invoice ? (
-        <PDFViewer width={info.width} height={info.height}>
+function ViewInvoice({info}) {
+
+    return info ? (
             <Document>
                 <Page size="A4" style={styles.page}>
                     <View style={styles.section2}>
@@ -240,24 +217,24 @@ function ViewInvoice(info) {
                         </Text>
                         <View style={styles.PosSection1}>
                             <View style={styles.section1}>
-                                <Text style={styles.TextSection1}>{invoice?.NameCustomer}</Text>
+                                <Text style={styles.TextSection1}>{info?.customerName}</Text>
                                 <Text style={styles.TextSection1}>
-                                    {invoice?.AdressCustomer}
+                                    {info?.customerAddress}
                                 </Text>
                                 <Text style={styles.TextSection1}>
-                                    {invoice?.zipCodeCustomer}
+                                    {info?.customerZipCode + " " + info?.customerCity}
                                 </Text>
                             </View>
                         </View>
                     </View>
                     <View style={styles.section}>
                         <Text style={styles.FactureNumber}>
-                            FACTURE N° {invoice?.numberInvoice}
+                            FACTURE N° {info?.invoiceNumber}
                         </Text>
                     </View>
                     <View style={styles.section}>
                         <Text style={styles.FacturePosition}>
-                            Le Breuil le, {new Date(invoice?.DateIssuance).toLocaleDateString('fr-FR')}
+                            Le Breuil le, {new Date(info?.issuanceDate).toLocaleDateString('fr-FR')}
                         </Text>
                     </View>
                     <View style={styles.sectionCollumn}>
@@ -295,7 +272,7 @@ function ViewInvoice(info) {
                     <View style={styles.sectionCollumn}>
                         <View style={styles.tableRowStyle} fixed>
                             <View style={styles.firstTableColHeaderStyle}>
-                                {invoice?.date_list?.map((input, index) => (
+                                {info?.dateList?.map((input, index) => (
                                     <div key={index}>
                                         <Text style={styles.tableCellHeaderStyle}>
                                             {new Date(input).toLocaleDateString('fr-FR')}
@@ -306,7 +283,7 @@ function ViewInvoice(info) {
 
                             <View style={styles.tableColHeaderStyle}>
                                 <View style={styles.firstTableColHeaderStyle2}>
-                                    {invoice?.enlevement_list?.map((input2, index2) => (
+                                    {info?.pickupList?.map((input2, index2) => (
                                         <div key={index2}>
                                             <Text style={styles.tableCellHeaderStyle}>
                                                 {input2}
@@ -318,7 +295,7 @@ function ViewInvoice(info) {
 
                             <View style={styles.tableColHeaderStyle}>
                                 <View style={styles.firstTableColHeaderStyle2}>
-                                    {invoice?.livraison_list?.map((input3, index3) => (
+                                    {info?.deliveryList?.map((input3, index3) => (
                                         <div key={index3}>
                                             <Text style={styles.tableCellHeaderStyle}>
                                                 {input3}
@@ -330,7 +307,7 @@ function ViewInvoice(info) {
 
                             <View style={styles.tableColHeaderStyle}>
                                 <View style={styles.firstTableColHeaderStyle2}>
-                                    {invoice?.reference_list?.map((input4, index4) => (
+                                    {info?.referenceList?.map((input4, index4) => (
                                         <div key={index4}>
                                             <Text style={styles.tableCellHeaderStyle}>
                                                 {input4}
@@ -342,10 +319,10 @@ function ViewInvoice(info) {
 
                             <View style={styles.tableColHeaderStyle}>
                                 <View style={styles.firstTableColHeaderStyle2}>
-                                    {invoice?.price_list.map((input5, index5) => (
+                                    {info?.priceList?.map((input5, index5) => (
                                         <div key={index5}>
                                             <Text style={styles.tableCellHeaderStyle}>
-                                                {input5.toFixed(2)} €
+                                                {parseFloat(input5).toFixed(2)} €
                                             </Text>
                                         </div>
                                     ))}
@@ -384,23 +361,22 @@ function ViewInvoice(info) {
 
                             <View style={styles.tableColHeaderStyle}>
                                 <Text style={styles.tableCellHeaderStyleTotalHT}>
-                                    {invoice?.priceHT.toFixed(2)}  €
+                                    {info?.TotalHT?.toFixed(2)}  €
                                 </Text>
                                 <Text style={styles.tableCellHeaderStyleTotalHT}>
                                     20%
                                 </Text>
                                 <Text style={styles.tableCellHeaderStyleTotalHT}>
-                                    {invoice?.priceTVA.toFixed(2)}  €
+                                    {info?.TotalTVA?.toFixed(2)}  €
                                 </Text>
                                 <Text style={styles.tableCellHeaderStyleTotalHT}>
-                                    {invoice?.priceTTC.toFixed(2)} €
+                                    {info?.TotalTTC?.toFixed(2)} €
                                 </Text>
                             </View>
                         </View>
                     </View>
                 </Page>
             </Document>
-        </PDFViewer>
     ) : (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
             <h1>Cette facture n'existe pas</h1>
