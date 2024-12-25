@@ -1,67 +1,70 @@
 import React from 'react';
 import {
-    Grid, Paper, Typography, Box, Chip, IconButton,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography,
 } from '@mui/material';
-import { styled } from '@mui/system';
 import { Visibility, PictureAsPdf } from '@mui/icons-material';
-import useFetchReducer from '@/useFetchReducer';
+import { styled } from '@mui/system';
 import Link from 'next/link';
+import useFetchReducer from '@/useFetchReducer';
 
 const PRIMARY_COLOR = "#013368";
 
-
-
-
-const InvoiceContainer = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(3),
-    margin: theme.spacing(2, 0),
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontWeight: 'bold',
+    backgroundColor: PRIMARY_COLOR,
+    color: 'white',
 }));
 
-const StatusChip = styled(Chip)(({ status }) => ({
-    backgroundColor: status === "paid" ? "#4caf50" :
-        status === "unPaid" ? "#f44336" : "#ffa726",
-    color: "#fff",
-    fontWeight: "bold",
+const StatusChip = styled('span')(({ status }) => ({
+    display: 'inline-block',
+    padding: '4px 8px',
+    borderRadius: '16px',
+    color: '#fff',
+    fontWeight: 'bold',
+    backgroundColor:
+        status === 'Paid' ? '#4caf50' :
+        status === 'Pending' ? '#ffa726' :
+        '#f44336',
 }));
 
 export default function InvoicesList() {
     const { data: invoices, loading, error } = useFetchReducer('api/invoices');
-    console.log(invoices)
+
+    if (loading) return <Typography>Chargement des factures...</Typography>;
+    if (error) return <Typography>Erreur lors du chargement des factures.</Typography>;
+
     return (
-        <Box sx={{ p: 2, height: "calc(600px - 64px)", overflowY: "auto", overflowX: "hidden" }}>
-            <div style={{ width: "100%", overflowX: "auto" }}>
-                {invoices.map((invoice) => (
-                    <InvoiceContainer key={invoice.numero}>
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item xs={12} sm={6} md={2}>
-                                <Typography variant="h6"><b>{invoice.invoiceNumber}</b></Typography>
-                                <Typography variant="subtitle2">Client: {invoice.customerName}</Typography>
-                            </Grid>
-
-                            <Grid item xs={6} sm={6} md={2}>
-
-                            </Grid>
-
-                            <Grid item xs={6} sm={6} md={2}>
-                                <Typography><b>Total HT:</b> {invoice.TotalHT} €</Typography>
-                                <Typography><b>Total TTC:</b> {invoice.TotalTTC} €</Typography>
-                            </Grid>
-
-                            <Grid item xs={6} sm={6} md={2}>
-                                <Typography><b>Date Création:</b> {new Date(invoice.issuanceDate).toLocaleDateString()}</Typography>
-                                <Typography><b>Échéance:</b> {new Date(invoice.dueDate).toLocaleDateString()}</Typography>
-                            </Grid>
-
-                            <Grid item xs={6} sm={6} md={2}>
-                                <StatusChip
-                                    label={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "En attente" : undefined || invoice.paymentStatus == "unPaid" ? "En attente" : undefined}
-                                    status={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "En attente" : undefined || invoice.paymentStatus == "unPaid" ? "En attente" : undefined}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} md={2} textAlign="right">
+        <TableContainer component={Paper} sx={{ mt: 2 }}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <StyledTableCell>Numéro de Facture</StyledTableCell>
+                        <StyledTableCell>Client</StyledTableCell>
+                        <StyledTableCell>Total HT (€)</StyledTableCell>
+                        <StyledTableCell>Total TTC (€)</StyledTableCell>
+                        <StyledTableCell>Date de Création</StyledTableCell>
+                        <StyledTableCell>Échéance</StyledTableCell>
+                        <StyledTableCell>Statut</StyledTableCell>
+                        <StyledTableCell align="center">Actions</StyledTableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {invoices.map((invoice) => (
+                        <TableRow key={invoice.id}>
+                            <TableCell>{invoice.invoiceNumber}</TableCell>
+                            <TableCell>{invoice.customerName}</TableCell>
+                            <TableCell>{invoice.TotalHT.toFixed(2)} €</TableCell>
+                            <TableCell>{invoice.TotalTTC.toFixed(2)} €</TableCell>
+                            <TableCell>{new Date(invoice.issuanceDate).toLocaleDateString()}</TableCell>
+                            <TableCell>{new Date(invoice.dueDate).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                                <StatusChip status={invoice.paymentStatus}>
+                                    {invoice.paymentStatus === 'Paid' && 'Payée'}
+                                    {invoice.paymentStatus === 'Pending' && 'En attente'}
+                                    {invoice.paymentStatus === 'Unpaid' && 'Non payée'}
+                                </StatusChip>
+                            </TableCell>
+                            <TableCell align="center">
                                 <Link href={`invoices/${invoice.id}`}>
                                     <IconButton color="primary" title="Voir Détails">
                                         <Visibility />
@@ -70,11 +73,11 @@ export default function InvoicesList() {
                                 <IconButton color="secondary" title="Télécharger PDF">
                                     <PictureAsPdf />
                                 </IconButton>
-                            </Grid>
-                        </Grid>
-                    </InvoiceContainer>
-                ))}
-            </div>
-        </Box>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 }
