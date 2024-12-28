@@ -39,7 +39,7 @@ function DriversList() {
                                 backgroundColor: '#fff',
                             }}
                         >
-                            <FaUserCircle style={{ fontSize: '3rem', color: '#3f51b5' }} />
+                            <FaUserCircle style={{ fontSize: '3rem', color: '#013368' }} />
                             <Typography variant="h6" sx={{ mt: 2 }}>
                                 {driver.name}
                             </Typography>
@@ -59,6 +59,7 @@ function DriversList() {
                                 onClick={handleDateConfirm}
                                 variant="contained"
                                 color="primary"
+                                style={{background:"#013368"}}
                                 fullWidth
                                 sx={{ mb: 2 }}
                             >

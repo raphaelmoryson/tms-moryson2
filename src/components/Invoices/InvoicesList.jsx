@@ -6,6 +6,8 @@ import { styled } from '@mui/system';
 import { Visibility, PictureAsPdf } from '@mui/icons-material';
 import useFetchReducer from '@/useFetchReducer';
 import Link from 'next/link';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ViewInvoice from './ViewInvoice';
 
 const PRIMARY_COLOR = "#013368";
 
@@ -20,8 +22,8 @@ const InvoiceContainer = styled(Paper)(({ theme }) => ({
 }));
 
 const StatusChip = styled(Chip)(({ status }) => ({
-    backgroundColor: status === "paid" ? "#4caf50" :
-        status === "unPaid" ? "#f44336" : "#ffa726",
+    backgroundColor: status === "Payer" ? "#4caf50" :
+        status === "Non Payer" ? "#f44336" : "#ffa726",
     color: "#fff",
     fontWeight: "bold",
 }));
@@ -56,8 +58,8 @@ export default function InvoicesList() {
 
                             <Grid item xs={6} sm={6} md={2}>
                                 <StatusChip
-                                    label={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "En attente" : undefined || invoice.paymentStatus == "unPaid" ? "En attente" : undefined}
-                                    status={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "En attente" : undefined || invoice.paymentStatus == "unPaid" ? "En attente" : undefined}
+                                    label={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "Payer" : undefined || invoice.paymentStatus == "unPaid" ? "Non Payer" : undefined}
+                                    status={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "Payer" : undefined || invoice.paymentStatus == "unPaid" ? "Non Payer" : undefined}
                                 />
                             </Grid>
 
@@ -67,9 +69,21 @@ export default function InvoicesList() {
                                         <Visibility />
                                     </IconButton>
                                 </Link>
-                                <IconButton color="secondary" title="Télécharger PDF">
-                                    <PictureAsPdf />
-                                </IconButton>
+                                <PDFDownloadLink
+                                    document={<ViewInvoice info={invoice} />}
+                                    fileName={`facture_${invoice.invoiceNumber}-${new Date(invoice.issuanceDate).toLocaleDateString()}.pdf`}
+                                >
+                                    {({ blob, url, loading, error }) =>
+                                        loading ? (
+                                            <p> Chargement...</p>
+                                        ) : (
+                                            <IconButton color="secondary" title="Télécharger PDF">
+                                                <PictureAsPdf />
+                                            </IconButton>
+                                        )
+                                    }
+                                </PDFDownloadLink>
+
                             </Grid>
                         </Grid>
                     </InvoiceContainer>
