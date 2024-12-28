@@ -1,25 +1,28 @@
 import React from 'react';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper';
+import {
+    useForm, Controller, useFieldArray
+} from 'react-hook-form';
+import {
+    TextField, Button, MenuItem, Paper, Typography
+} from '@mui/material';
 import { styled } from '@mui/system';
 
 const PRIMARY_COLOR = "#013368";
-const FORM_STYLES = {
-    padding: "2rem",
-    maxWidth: "1800px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-};
+
+const FormContainer = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(3),
+    maxWidth: "100%",
+    height: "600px",
+    overflowY: "auto",
+    overflowX: "hidden",
+}));
 
 const StyledButton = styled(Button)({
     backgroundColor: PRIMARY_COLOR,
     color: "#fff",
     "&:hover": {
         backgroundColor: "#011d4c",
-    }
+    },
 });
 
 function CreateInvoicesForm() {
@@ -37,48 +40,38 @@ function CreateInvoicesForm() {
             customerZipCode: '',
             paymentStatus: 'Pending',
             createdBy: '',
-        }
+            services: [],
+        },
     });
-
 
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "services"
+        name: "services",
     });
-    const handleFormSubmit = async (data) => {
-        console.log(data)
-        try {
-            let priceList = data.services.map(s => s.prixHT)
-            let dateList = data.services.map(s => s.date)
-            let pickupList = data.services.map(s => s.enlevement)
-            let deliveryList = data.services.map(s => s.livraison)
-            let referenceList = data.services.map(s => s.reference)
 
-            let TotalHT = priceList.reduce((acc, ecc) => parseFloat(acc) + parseFloat(ecc))
-            let TotalTVA = TotalHT / 100 * 20
-            let TotalTTC = TotalHT + TotalTVA
+    const handleFormSubmit = async (data) => {
+        try {
+            let priceList = data.services.map((s) => s.prixHT);
+            let TotalHT = priceList.reduce((acc, val) => parseFloat(acc) + parseFloat(val), 0);
+            let TotalTVA = (TotalHT * 20) / 100;
+            let TotalTTC = TotalHT + TotalTVA;
+
             const response = await fetch('/api/invoices/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...data,
-                    TotalHT: TotalHT,
-                    TotalTVA: TotalTVA,
-                    TotalTTC: TotalTTC,
-                    priceList: priceList,
-                    dateList: dateList,
-                    pickupList: pickupList,
-                    deliveryList: deliveryList,
-                    referenceList: referenceList,
-
+                    TotalHT,
+                    TotalTVA,
+                    TotalTTC,
                 }),
             });
 
-            const result = await response.json();
             if (response.ok) {
                 alert("Facture créée avec succès !");
                 reset();
             } else {
+                const result = await response.json();
                 alert("Erreur: " + result.error);
             }
         } catch (error) {
@@ -88,7 +81,10 @@ function CreateInvoicesForm() {
     };
 
     return (
-        <Paper style={FORM_STYLES}>
+        <FormContainer>
+            <Typography variant="h5" gutterBottom>
+                Créer une Facture
+            </Typography>
             <form onSubmit={handleSubmit(handleFormSubmit)}>
                 {[
                     { name: "invoiceNumber", label: "Numéro de Facture" },
@@ -96,7 +92,7 @@ function CreateInvoicesForm() {
                     { name: "customerAddress", label: "Adresse du Client" },
                     { name: "customerCity", label: "Ville du Client" },
                     { name: "customerZipCode", label: "Code Postal" },
-                    { name: "createdBy", label: "Créé Par" }
+                    { name: "createdBy", label: "Créé Par" },
                 ].map(({ name, label }) => (
                     <Controller
                         key={name}
@@ -170,15 +166,24 @@ function CreateInvoicesForm() {
                     )}
                 />
 
-                <h3 style={{ color: PRIMARY_COLOR }}>Services</h3>
+                <Typography variant="h6" sx={{ mt: 2, color: PRIMARY_COLOR }}>
+                    Services
+                </Typography>
                 {fields.map((item, index) => (
-                    <div key={item.id} style={{ marginBottom: "1rem", borderBottom: "1px solid #ccc", paddingBottom: "1rem", display: "flex" }}>
+                    <div
+                        key={item.id}
+                        style={{
+                            marginBottom: "1rem",
+                            borderBottom: "1px solid #ccc",
+                            paddingBottom: "1rem",
+                        }}
+                    >
                         {[
                             { name: "date", label: "Date", type: "date" },
                             { name: "enlevement", label: "Enlèvement" },
                             { name: "livraison", label: "Livraison" },
                             { name: "reference", label: "Référence" },
-                            { name: "prixHT", label: "Prix HT (€)", type: "number" }
+                            { name: "prixHT", label: "Prix HT (€)", type: "number" },
                         ].map(({ name, label, type }) => (
                             <Controller
                                 key={name}
@@ -187,7 +192,7 @@ function CreateInvoicesForm() {
                                 render={({ field }) => (
                                     <TextField
                                         label={label}
-                                        type={type}
+                                        type={type || "text"}
                                         margin="normal"
                                         fullWidth
                                         {...field}
@@ -195,12 +200,11 @@ function CreateInvoicesForm() {
                                 )}
                             />
                         ))}
-
                         <Button
                             variant="outlined"
                             color="secondary"
                             onClick={() => remove(index)}
-                            style={{ marginTop: "0.5rem" }}
+                            sx={{ mt: 1 }}
                         >
                             Supprimer
                         </Button>
@@ -211,16 +215,16 @@ function CreateInvoicesForm() {
                     variant="outlined"
                     color="primary"
                     onClick={() => append({ date: '', enlevement: '', livraison: '', reference: '', prixHT: '' })}
-                    style={{ marginBottom: "1rem" }}
+                    sx={{ mt: 2 }}
                 >
                     Ajouter un Service
                 </Button>
 
-                <StyledButton type="submit" variant="contained" fullWidth>
+                <StyledButton type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
                     Enregistrer la Facture
                 </StyledButton>
             </form>
-        </Paper>
+        </FormContainer>
     );
 }
 

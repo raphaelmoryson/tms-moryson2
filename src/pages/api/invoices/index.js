@@ -9,9 +9,6 @@ export default async function handler(req, res) {
     try {
         if (req.method === 'GET') {
             const invoices = await prisma.invoice.findMany();
-            if (invoices.length === 0) {
-                return res.status(404).json({ message: "No invoices found." });
-            }
             res.status(200).json(invoices);
         } else {
             res.setHeader('Allow', ['GET']);

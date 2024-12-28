@@ -1,36 +1,34 @@
 import React from 'react';
 import {
-    Grid, Paper, Typography, Box, Chip, IconButton,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography,
 } from '@mui/material';
-import { styled } from '@mui/system';
 import { Visibility, PictureAsPdf } from '@mui/icons-material';
+import { styled } from '@mui/system';
+import Link from 'next/link';
 import useFetchReducer from '@/useFetchReducer';
 import Link from 'next/link';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import ViewInvoice from './ViewInvoice';
 
 const PRIMARY_COLOR = "#013368";
 
-
-
-
-const InvoiceContainer = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(3),
-    margin: theme.spacing(2, 0),
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontWeight: 'bold',
+    backgroundColor: PRIMARY_COLOR,
+    color: 'white',
 }));
 
 const StatusChip = styled(Chip)(({ status }) => ({
-    backgroundColor: status === "Payer" ? "#4caf50" :
-        status === "Non Payer" ? "#f44336" : "#ffa726",
+    backgroundColor: status === "paid" ? "#4caf50" :
+        status === "unPaid" ? "#f44336" : "#ffa726",
     color: "#fff",
     fontWeight: "bold",
 }));
 
 export default function InvoicesList() {
     const { data: invoices, loading, error } = useFetchReducer('api/invoices');
-    console.log(invoices)
+
+    if (loading) return <Typography>Chargement des factures...</Typography>;
+    if (error) return <Typography>Erreur lors du chargement des factures.</Typography>;
+
     return (
         <Box sx={{ p: 2, height: "calc(600px - 64px)", overflowY: "auto", overflowX: "hidden" }}>
             <div style={{ width: "100%", overflowX: "auto" }}>
@@ -58,8 +56,8 @@ export default function InvoicesList() {
 
                             <Grid item xs={6} sm={6} md={2}>
                                 <StatusChip
-                                    label={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "Payer" : undefined || invoice.paymentStatus == "unPaid" ? "Non Payer" : undefined}
-                                    status={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "Payer" : undefined || invoice.paymentStatus == "unPaid" ? "Non Payer" : undefined}
+                                    label={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "En attente" : undefined || invoice.paymentStatus == "unPaid" ? "En attente" : undefined}
+                                    status={invoice.paymentStatus == "Pending" ? "En attente" : undefined || invoice.paymentStatus == "Paid" ? "En attente" : undefined || invoice.paymentStatus == "unPaid" ? "En attente" : undefined}
                                 />
                             </Grid>
 
@@ -69,21 +67,9 @@ export default function InvoicesList() {
                                         <Visibility />
                                     </IconButton>
                                 </Link>
-                                <PDFDownloadLink
-                                    document={<ViewInvoice info={invoice} />}
-                                    fileName={`facture_${invoice.invoiceNumber}-${new Date(invoice.issuanceDate).toLocaleDateString()}.pdf`}
-                                >
-                                    {({ blob, url, loading, error }) =>
-                                        loading ? (
-                                            <p> Chargement...</p>
-                                        ) : (
-                                            <IconButton color="secondary" title="Télécharger PDF">
-                                                <PictureAsPdf />
-                                            </IconButton>
-                                        )
-                                    }
-                                </PDFDownloadLink>
-
+                                <IconButton color="secondary" title="Télécharger PDF">
+                                    <PictureAsPdf />
+                                </IconButton>
                             </Grid>
                         </Grid>
                     </InvoiceContainer>

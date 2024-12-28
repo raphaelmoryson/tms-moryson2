@@ -1,16 +1,25 @@
-import useFetchReducer from '@/useFetchReducer';
 import React, { useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-import dynamic from 'next/dynamic';
-import DailyWorkSheet from '@/pages/orders/worksheet/DailyWorkSheet';
-import { Box, Button, TextField, Typography, useMediaQuery, Grid } from '@mui/material';
+import useFetchReducer from '@/useFetchReducer';
 import { PDFDownloadLink } from '@react-pdf/renderer';
+import DailyWorkSheet from '@/pages/orders/worksheet/DailyWorkSheet';
+import {
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+} from '@mui/material';
 
 function DriversList() {
     const [worksheetDate, setWorksheetDate] = useState(new Date().toISOString().split('T')[0]);
     const [confirmedDate, setConfirmedDate] = useState(null);
     const { data: drivers, loading, error } = useFetchReducer('api/drivers');
-
 
     const handleDateChange = (e) => {
         setWorksheetDate(e.target.value);
@@ -39,7 +48,7 @@ function DriversList() {
                                 backgroundColor: '#fff',
                             }}
                         >
-                            <FaUserCircle style={{ fontSize: '3rem', color: '#013368' }} />
+                            <FaUserCircle style={{ fontSize: '3rem', color: '#3f51b5' }} />
                             <Typography variant="h6" sx={{ mt: 2 }}>
                                 {driver.name}
                             </Typography>
@@ -59,7 +68,6 @@ function DriversList() {
                                 onClick={handleDateConfirm}
                                 variant="contained"
                                 color="primary"
-                                style={{background:"#013368"}}
                                 fullWidth
                                 sx={{ mb: 2 }}
                             >
